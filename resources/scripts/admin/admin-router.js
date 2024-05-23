@@ -14,11 +14,11 @@ const ForgotPassword = () =>
 // Dashboard
 const Dashboard = () => import('@/scripts/admin/views/dashboard/Dashboard.vue')
 
-// Catalogs
-const CatalogIndex = () => import('@/scripts/admin/views/catalogs/Index.vue')
-const CatalogCreate = () =>
-  import('@/scripts/admin/views/catalogs/Create.vue')
-const CatalogView = () => import('@/scripts/admin/views/catalogs/View.vue')
+// Categories
+const CategoryIndex = () => import('@/scripts/admin/views/categories/Index.vue')
+const CategoryCreate = () =>
+  import('@/scripts/admin/views/categories/Create.vue')
+const CategoryView = () => import('@/scripts/admin/views/categories/View.vue')
 
 // Customers
 const CustomerIndex = () => import('@/scripts/admin/views/customers/Index.vue')
@@ -303,9 +303,9 @@ export default [
             component: CustomFieldsIndex,
           },
           {
-            path: 'expense-category',
-            name: 'expense.category',
-            meta: { ability: abilities.VIEW_EXPENSE },
+            path: 'category',
+            name: 'category',
+            meta: { ability: abilities.VIEW_CATEGORY },
             component: Category,
           },
 
@@ -327,12 +327,12 @@ export default [
             meta: { isOwner: true },
             component: Backup,
           },
-          {
-            path: 'update-app',
-            name: 'updateapp',
-            meta: { isOwner: true },
-            component: UpdateApp,
-          },
+          // {
+          //   path: 'update-app',
+          //   name: 'updateapp',
+          //   meta: { isOwner: true },
+          //   component: UpdateApp,
+          // },
         ],
       },
 
@@ -494,29 +494,29 @@ export default [
         component: ReportsIndex,
       },
 
-      // Catalogs
+      // Categories
       {
-        path: 'catalogs',
-        meta: { ability: abilities.VIEW_CATALOG },
-        component: CatalogIndex,
+        path: 'categories',
+        meta: { ability: abilities.VIEW_CATEGORY },
+        component: CategoryIndex,
       },
       {
-        path: 'catalogs/create',
-        name: 'catalogs.create',
-        meta: { ability: abilities.CREATE_CATALOG },
-        component: CatalogCreate,
+        path: 'categories/create',
+        name: 'categories.create',
+        meta: { ability: abilities.CREATE_CATEGORY },
+        component: CategoryCreate,
       },
       {
-        path: 'catalogs/:id/edit',
-        name: 'catalogs.edit',
-        meta: { ability: abilities.EDIT_CATALOG },
-        component: CatalogCreate,
+        path: 'categories/:id/edit',
+        name: 'categories.edit',
+        meta: { ability: abilities.EDIT_CATEGORY },
+        component: CategoryCreate,
       },
       {
-        path: 'catalogs/:id/view',
-        name: 'catalogs.view',
-        meta: { ability: abilities.VIEW_CATALOG },
-        component: CatalogView,
+        path: 'categories/:id/view',
+        name: 'categories.view',
+        meta: { ability: abilities.VIEW_CATEGORY },
+        component: CategoryView,
       },
     ],
   },

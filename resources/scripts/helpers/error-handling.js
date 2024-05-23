@@ -58,7 +58,7 @@ export const showError = (error) => {
       break
 
     case 'expense_attached':
-      showToaster('settings.expense_category.already_in_use')
+      showToaster('settings.category.already_in_use')
       break
 
     case 'payments_attached':

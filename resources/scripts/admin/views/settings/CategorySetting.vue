@@ -2,8 +2,8 @@
   <CategoryModal />
 
   <BaseSettingCard
-    :title="$t('settings.expense_category.title')"
-    :description="$t('settings.expense_category.description')"
+    :title="$t('settings.category.title')"
+    :description="$t('settings.category.description')"
   >
     <template #action>
       <BaseButton
@@ -15,7 +15,7 @@
           <BaseIcon :class="slotProps.class" name="PlusIcon" />
         </template>
 
-        {{ $t('settings.expense_category.add_new_category') }}
+        {{ $t('settings.category.add_new_category') }}
       </BaseButton>
     </template>
 
@@ -63,13 +63,13 @@ const CategoryColumns = computed(() => {
   return [
     {
       key: 'name',
-      label: t('settings.expense_category.category_name'),
+      label: t('settings.category.category_name'),
       thClass: 'extra',
       tdClass: 'font-medium text-gray-900',
     },
     {
       key: 'description',
-      label: t('settings.expense_category.category_description'),
+      label: t('settings.category.category_description'),
       thClass: 'extra',
       tdClass: 'font-medium text-gray-900',
     },
@@ -104,7 +104,7 @@ async function fetchData({ page, filter, sort }) {
 
 function openCategoryModal() {
   modalStore.openModal({
-    title: t('settings.expense_category.add_category'),
+    title: t('settings.category.add_category'),
     componentName: 'CategoryModal',
     size: 'sm',
     refreshData: table.value && table.value.refresh,

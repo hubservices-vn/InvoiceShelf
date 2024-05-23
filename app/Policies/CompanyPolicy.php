@@ -19,6 +19,15 @@ class CompanyPolicy
         return false;
     }
 
+    public function updatePermissions(User $user, Company $company)
+    {
+        if ($user->id == $company->owner_id) {
+            return true;
+        }
+
+        return false;
+    }
+
     public function delete(User $user, Company $company)
     {
         if ($user->id == $company->owner_id) {

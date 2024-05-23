@@ -1,6 +1,6 @@
 <?php
 
-use InvoiceShelf\Models\Catalog;
+use InvoiceShelf\Models\Category;
 use InvoiceShelf\Models\Customer;
 use InvoiceShelf\Models\CustomField;
 use InvoiceShelf\Models\Estimate;
@@ -227,10 +227,10 @@ return [
             'model' => Note::class,
         ],
         [
-            'title' => 'settings.menu_title.expense_category',
+            'title' => 'settings.menu_title.category',
             'group' => '',
             'name' => 'Expense Category',
-            'link' => '/admin/settings/expense-category',
+            'link' => '/admin/settings/category',
             'icon' => 'ClipboardListIcon',
             'owner_only' => false,
             'ability' => 'view-expense',
@@ -266,16 +266,16 @@ return [
             'ability' => '',
             'model' => '',
         ],
-        [
-            'title' => 'settings.menu_title.update_app',
-            'group' => '',
-            'name' => 'Update App',
-            'link' => '/admin/settings/update-app',
-            'icon' => 'RefreshIcon',
-            'owner_only' => true,
-            'ability' => '',
-            'model' => '',
-        ],
+        // [
+        //     'title' => 'settings.menu_title.update_app',
+        //     'group' => '',
+        //     'name' => 'Update App',
+        //     'link' => '/admin/settings/update-app',
+        //     'icon' => 'RefreshIcon',
+        //     'owner_only' => true,
+        //     'ability' => '',
+        //     'model' => '',
+        // ],
     ],
 
     /*
@@ -303,14 +303,14 @@ return [
             'model' => Customer::class,
         ],
         [
-            'title' => 'navigation.catalogs',
+            'title' => 'navigation.categories',
             'group' => 1,
-            'link' => '/admin/catalogs',
+            'link' => '/admin/categories',
             'icon' => 'TagIcon',
-            'name' => 'Catalogs',
+            'name' => 'Categories',
             'owner_only' => false,
-            'ability' => 'view-catalog',
-            'model' => Catalog::class,
+            'ability' => 'view-category',
+            'model' => Category::class,
         ],
         [
             'title' => 'navigation.items',

@@ -56,6 +56,19 @@ class CompaniesController extends Controller
         ]);
     }
 
+    public function permissions(Request $request)
+    {
+        $company = Company::find($request->header('company'));
+
+        $this->authorize('update permissions', $company);
+
+        $company->setupRoles();
+
+        return response()->json([
+            'success' => true,
+        ]);
+    }
+
     public function transferOwnership(Request $request, User $user)
     {
         $company = Company::find($request->header('company'));

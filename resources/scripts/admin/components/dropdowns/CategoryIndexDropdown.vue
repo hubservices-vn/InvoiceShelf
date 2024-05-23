@@ -75,7 +75,7 @@ const $utils = inject('utils')
 function editCategory(data) {
   categoryStore.fetchCategory(data)
   modalStore.openModal({
-    title: t('settings.expense_category.edit_category'),
+    title: t('settings.category.edit_category'),
     componentName: 'CategoryModal',
     refreshData: props.loadData,
     size: 'sm',
@@ -86,7 +86,7 @@ function removeCategory(id) {
   dialogStore
     .openDialog({
       title: t('general.are_you_sure'),
-      message: t('settings.expense_category.confirm_delete'),
+      message: t('settings.category.confirm_delete'),
       yesLabel: t('general.ok'),
       noLabel: t('general.cancel'),
       variant: 'danger',

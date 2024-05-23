@@ -6,8 +6,8 @@
           <BaseBreadcrumbItem :title="$t('general.home')" to="dashboard" />
 
           <BaseBreadcrumbItem
-            :title="$t('catalogs.catalog', 2)"
-            to="/admin/catalogs"
+            :title="$t('categories.category', 2)"
+            to="/admin/categories"
           />
 
           <BaseBreadcrumb-item :title="pageTitle" to="#" active />
@@ -21,8 +21,8 @@
               </template>
               {{
                 isEdit
-                  ? $t('catalogs.update_catalog')
-                  : $t('catalogs.save_catalog')
+                  ? $t('categories.update_category')
+                  : $t('categories.save_category')
               }}
             </BaseButton>
           </div>
@@ -32,7 +32,7 @@
       <BaseCard class="mt-5">
         <BaseInputGrid class="col-span-5 lg:col-span-4">
           <BaseInputGroup
-            :label="$t('catalogs.display_name')"
+            :label="$t('categories.display_name')"
             required
             :error="
               v$.currentCustomer.name.$error &&
@@ -52,13 +52,13 @@
           </BaseInputGroup>
 
           <BaseInputGroup
-            :label="$t('catalogs.parent')"
+            :label="$t('categories.parent')"
             :content-loading="isFetchingInitialData"
           >
             <BaseTreeSelect
               value-prop="value"
               label-prop="name"
-              :placeholder="$t('catalogs.select_parent')"
+              :placeholder="$t('categories.select_parent')"
               parent-prop="parentId"
               :options="parentOptions"
               v-model="value"
@@ -71,7 +71,7 @@
               v$.currentCustomer.email.$errors[0].$message
             "
             :content-loading="isFetchingInitialData"
-            :label="$t('catalogs.type')"
+            :label="$t('categories.type')"
           >
             <BaseMultiselect
               v-model="customerStore.currentCustomer.billing.country_id"
@@ -88,7 +88,7 @@
           </BaseInputGroup>
 
           <BaseInputGroup
-            :label="$t('catalogs.description')"
+            :label="$t('categories.description')"
             :content-loading="isFetchingInitialData"
           >
             <BaseInput
@@ -100,7 +100,7 @@
           </BaseInputGroup>
 
           <BaseInputGroup
-            :label="$t('catalogs.image')"
+            :label="$t('categories.image')"
             :content-loading="isFetchingInitialData"
             :error="
               v$.currentCustomer.currency_id.$error &&
@@ -159,12 +159,12 @@ let isFetchingInitialData = ref(false)
 let active = ref(false)
 const isSaving = ref(false)
 
-const isEdit = computed(() => route.name === 'catalogs.edit')
+const isEdit = computed(() => route.name === 'categories.edit')
 
 let isLoadingContent = computed(() => customerStore.isFetchingInitialSettings)
 
 const pageTitle = computed(() =>
-  isEdit.value ? t('catalogs.edit_catalog') : t('catalogs.new_catalog'),
+  isEdit.value ? t('categories.edit_category') : t('categories.new_category'),
 )
 
 const parentOptions = [

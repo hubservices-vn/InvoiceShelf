@@ -92,7 +92,7 @@
                     name="PlusIcon"
                     class="h-4 mr-2 -ml-2 text-center text-primary-400"
                   />
-                  {{ $t('settings.expense_category.add_new_category') }}
+                  {{ $t('settings.category.add_new_category') }}
                 </BaseSelectAction>
               </template>
             </BaseMultiselect>
@@ -403,7 +403,7 @@ function onFileInputRemove() {
 
 function openCategoryModal() {
   modalStore.openModal({
-    title: t('settings.expense_category.add_category'),
+    title: t('settings.category.add_category'),
     componentName: 'CategoryModal',
     size: 'sm',
   })

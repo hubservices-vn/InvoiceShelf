@@ -66,7 +66,7 @@ export const useCategoryStore = (useWindow = false) => {
               const notificationStore = useNotificationStore()
               notificationStore.showNotification({
                 type: 'success',
-                message: global.t('settings.expense_category.created_message'),
+                message: global.t('settings.category.created_message'),
               })
               resolve(response)
             })
@@ -91,7 +91,7 @@ export const useCategoryStore = (useWindow = false) => {
                 notificationStore.showNotification({
                   type: 'success',
                   message: global.t(
-                    'settings.expense_category.updated_message'
+                    'settings.category.updated_message'
                   ),
                 })
               }
@@ -116,7 +116,7 @@ export const useCategoryStore = (useWindow = false) => {
               const notificationStore = useNotificationStore()
               notificationStore.showNotification({
                 type: 'success',
-                message: global.t('settings.expense_category.deleted_message'),
+                message: global.t('settings.category.deleted_message'),
               })
               resolve(response)
             })

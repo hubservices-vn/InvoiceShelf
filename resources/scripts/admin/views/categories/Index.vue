@@ -1,11 +1,11 @@
 <template>
   <BasePage>
     <!-- Page Header Section -->
-    <BasePageHeader :title="$t('catalogs.title')">
+    <BasePageHeader :title="$t('categories.title')">
       <BaseBreadcrumb>
         <BaseBreadcrumbItem :title="$t('general.home')" to="dashboard" />
         <BaseBreadcrumbItem
-          :title="$t('catalogs.catalog', 2)"
+          :title="$t('categories.category', 2)"
           to="#"
           active
         />
@@ -30,13 +30,13 @@
           </BaseButton>
 
           <BaseButton
-            v-if="userStore.hasAbilities(abilities.CREATE_CATALOG)"
-            @click="$router.push('catalogs/create')"
+            v-if="userStore.hasAbilities(abilities.CREATE_CATEGORY)"
+            @click="$router.push('categories/create')"
           >
             <template #left="slotProps">
               <BaseIcon name="PlusIcon" :class="slotProps.class" />
             </template>
-            {{ $t('catalogs.new_catalog') }}
+            {{ $t('categories.new_category') }}
           </BaseButton>
         </div>
       </template>
@@ -73,21 +73,21 @@
 
     <BaseEmptyPlaceholder
       v-show="showEmptyScreen"
-      :title="$t('catalogs.no_catalogs')"
-      :description="$t('catalogs.list_of_catalogs')"
+      :title="$t('categories.no_categories')"
+      :description="$t('categories.list_of_categories')"
     >
       <AstronautIcon class="mt-5 mb-4" />
 
       <template #actions>
         <BaseButton
-          v-if="userStore.hasAbilities(abilities.CREATE_CATALOG)"
+          v-if="userStore.hasAbilities(abilities.CREATE_CATEGORY)"
           variant="primary-outline"
-          @click="$router.push('/admin/catalogs/create')"
+          @click="$router.push('/admin/categories/create')"
         >
           <template #left="slotProps">
             <BaseIcon name="PlusIcon" :class="slotProps.class" />
           </template>
-          {{ $t('catalogs.add_new_catalog') }}
+          {{ $t('categories.add_new_category') }}
         </BaseButton>
       </template>
     </BaseEmptyPlaceholder>

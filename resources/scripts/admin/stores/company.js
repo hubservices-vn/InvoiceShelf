@@ -181,6 +181,20 @@ export const useCompanyStore = (useWindow = false) => {
         })
       },
 
+      updatePermissions(data) {
+        return new Promise((resolve, reject) => {
+          axios
+            .post(`/api/v1/companies/permissions`, data)
+            .then((response) => {
+              resolve(response)
+            })
+            .catch((err) => {
+              handleError(err)
+              reject(err)
+            })
+        })
+      },
+
       setDefaultCurrency(data) {
         this.defaultCurrency = data.currency
       },

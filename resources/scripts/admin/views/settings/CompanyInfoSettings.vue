@@ -111,6 +111,26 @@
       <div v-if="companyStore.companies.length !== 1" class="py-5">
         <BaseDivider class="my-4" />
         <h3 class="text-lg leading-6 font-medium text-gray-900">
+          {{ $t('settings.company_info.update_permissions') }}
+        </h3>
+        <div class="mt-2 max-w-xl text-sm text-gray-500">
+          <p>
+            {{ $t('settings.company_info.update_permissions_description') }}
+          </p>
+        </div>
+        <div class="mt-5">
+          <button
+            type="button"
+            class="inline-flex items-center justify-center px-4 py-2 border border-transparent font-medium rounded-md text-blue-700 bg-blue-100 hover:bg-blue-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:text-sm"
+            @click="updatePermissions"
+          >
+            {{ $t('general.confirm_update') }}
+          </button>
+        </div>
+      </div>
+      <div v-if="companyStore.companies.length !== 1" class="py-5">
+        <BaseDivider class="my-4" />
+        <h3 class="text-lg leading-6 font-medium text-gray-900">
           {{ $t('settings.company_info.delete_company') }}
         </h3>
         <div class="mt-2 max-w-xl text-sm text-gray-500">
@@ -131,6 +151,7 @@
     </BaseSettingCard>
   </form>
   <DeleteCompanyModal />
+  <UpdatePermissionModal />
 </template>
 
 <script setup>
@@ -142,6 +163,7 @@ import { required, minLength, helpers } from '@vuelidate/validators'
 import { useVuelidate } from '@vuelidate/core'
 import { useModalStore } from '@/scripts/stores/modal'
 import DeleteCompanyModal from '@/scripts/admin/components/modal-components/DeleteCompanyModal.vue'
+import UpdatePermissionModal from '@/scripts/admin/components/modal-components/UpdatePermissionModal.vue'
 
 const companyStore = useCompanyStore()
 const globalStore = useGlobalStore()
@@ -251,6 +273,13 @@ async function updateCompanyData() {
     isSaving.value = false
   }
   isSaving.value = false
+}
+function updatePermissions(id) {
+  modalStore.openModal({
+    title: t('settings.company_info.are_you_absolutely_sure'),
+    componentName: 'UpdatePermissionModal',
+    size: 'sm',
+  })
 }
 function removeCompany(id) {
   modalStore.openModal({

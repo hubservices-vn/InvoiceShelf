@@ -404,7 +404,7 @@ Route::prefix('/v1')->group(function () {
         // Self Update
         //----------------------------------
 
-        Route::get('/check/update', CheckVersionController::class);
+        // Route::get('/check/update', CheckVersionController::class);
 
         Route::post('/update/download', DownloadUpdateController::class);
 
@@ -426,6 +426,8 @@ Route::prefix('/v1')->group(function () {
         Route::post('/transfer/ownership/{user}', [CompaniesController::class, 'transferOwnership']);
 
         Route::post('companies/delete', [CompaniesController::class, 'destroy']);
+
+        Route::post('companies/permissions', [CompaniesController::class, 'permissions']);
 
         Route::get('companies', [CompaniesController::class, 'getUserCompanies']);
 

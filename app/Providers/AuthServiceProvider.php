@@ -6,7 +6,6 @@ use Gate;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use InvoiceShelf\Policies\CompanyPolicy;
 use InvoiceShelf\Policies\CustomerPolicy;
-use InvoiceShelf\Policies\CatalogPolicy;
 use InvoiceShelf\Policies\DashboardPolicy;
 use InvoiceShelf\Policies\EstimatePolicy;
 use InvoiceShelf\Policies\ExpensePolicy;
@@ -30,7 +29,7 @@ class AuthServiceProvider extends ServiceProvider
      */
     protected $policies = [
         \InvoiceShelf\Models\Customer::class => \InvoiceShelf\Policies\CustomerPolicy::class,
-        \InvoiceShelf\Models\Catalog::class => \InvoiceShelf\Policies\CatalogPolicy::class,
+        \InvoiceShelf\Models\Category::class => \InvoiceShelf\Policies\CategoryPolicy::class,
         \InvoiceShelf\Models\Invoice::class => \InvoiceShelf\Policies\InvoicePolicy::class,
         \InvoiceShelf\Models\Estimate::class => \InvoiceShelf\Policies\EstimatePolicy::class,
         \InvoiceShelf\Models\Payment::class => \InvoiceShelf\Policies\PaymentPolicy::class,
@@ -59,6 +58,7 @@ class AuthServiceProvider extends ServiceProvider
         Gate::define('create company', [CompanyPolicy::class, 'create']);
         Gate::define('transfer company ownership', [CompanyPolicy::class, 'transferOwnership']);
         Gate::define('delete company', [CompanyPolicy::class, 'delete']);
+        Gate::define('update permissions', [CompanyPolicy::class, 'updatePermissions']);
 
         Gate::define('manage modules', [ModulesPolicy::class, 'manageModules']);
 
