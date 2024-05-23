@@ -22,3 +22,4 @@ Homestead.yaml
 .php-cs-fixer.cache
 /storage/fonts*
 package-lock.json
+*.timestamp*.mjs

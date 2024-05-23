@@ -14,6 +14,12 @@ const ForgotPassword = () =>
 // Dashboard
 const Dashboard = () => import('@/scripts/admin/views/dashboard/Dashboard.vue')
 
+// Catalogs
+const CatalogIndex = () => import('@/scripts/admin/views/catalogs/Index.vue')
+const CatalogCreate = () =>
+  import('@/scripts/admin/views/catalogs/Create.vue')
+const CatalogView = () => import('@/scripts/admin/views/catalogs/View.vue')
+
 // Customers
 const CustomerIndex = () => import('@/scripts/admin/views/customers/Index.vue')
 const CustomerCreate = () =>
@@ -486,6 +492,31 @@ export default [
         path: 'reports',
         meta: { ability: abilities.VIEW_FINANCIAL_REPORT },
         component: ReportsIndex,
+      },
+
+      // Catalogs
+      {
+        path: 'catalogs',
+        meta: { ability: abilities.VIEW_CATALOG },
+        component: CatalogIndex,
+      },
+      {
+        path: 'catalogs/create',
+        name: 'catalogs.create',
+        meta: { ability: abilities.CREATE_CATALOG },
+        component: CatalogCreate,
+      },
+      {
+        path: 'catalogs/:id/edit',
+        name: 'catalogs.edit',
+        meta: { ability: abilities.EDIT_CATALOG },
+        component: CatalogCreate,
+      },
+      {
+        path: 'catalogs/:id/view',
+        name: 'catalogs.view',
+        meta: { ability: abilities.VIEW_CATALOG },
+        component: CatalogView,
       },
     ],
   },

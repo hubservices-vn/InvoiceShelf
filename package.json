@@ -32,9 +32,9 @@
     "@stripe/stripe-js": "^2.4.0",
     "@tiptap/core": "^2.1.16",
     "@tiptap/extension-text-align": "^2.1.16",
+    "@tiptap/pm": "^2.0.0",
     "@tiptap/starter-kit": "^2.1.16",
     "@tiptap/vue-3": "^2.1.16",
-    "@tiptap/pm": "^2.0.0",
     "@types/node": "^20.11.9",
     "@vuelidate/components": "^1.2.6",
     "@vuelidate/core": "^2.0.3",
@@ -57,6 +57,7 @@
     "vue-flatpickr-component": "^11.0.3",
     "vue-i18n": "^9.9.0",
     "vue-router": "^4.2.5",
+    "vue3-treeselect": "^0.1.10",
     "vuedraggable": "^4.1.0"
   }
 }

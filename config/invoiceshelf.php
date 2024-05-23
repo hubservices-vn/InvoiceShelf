@@ -1,5 +1,6 @@
 <?php
 
+use InvoiceShelf\Models\Catalog;
 use InvoiceShelf\Models\Customer;
 use InvoiceShelf\Models\CustomField;
 use InvoiceShelf\Models\Estimate;
@@ -300,6 +301,16 @@ return [
             'owner_only' => false,
             'ability' => 'view-customer',
             'model' => Customer::class,
+        ],
+        [
+            'title' => 'navigation.catalogs',
+            'group' => 1,
+            'link' => '/admin/catalogs',
+            'icon' => 'TagIcon',
+            'name' => 'Catalogs',
+            'owner_only' => false,
+            'ability' => 'view-catalog',
+            'model' => Catalog::class,
         ],
         [
             'title' => 'navigation.items',

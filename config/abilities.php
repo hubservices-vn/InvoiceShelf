@@ -1,5 +1,6 @@
 <?php
 
+use InvoiceShelf\Models\Catalog;
 use InvoiceShelf\Models\Customer;
 use InvoiceShelf\Models\CustomField;
 use InvoiceShelf\Models\Estimate;
@@ -45,6 +46,39 @@ return [
             'model' => Customer::class,
             'depends_on' => [
                 'view-customer',
+            ],
+        ],
+
+        // Catalog
+        [
+            'name' => 'view catalog',
+            'ability' => 'view-catalog',
+            'model' => Catalog::class,
+        ],
+        [
+            'name' => 'create catalog',
+            'ability' => 'create-catalog',
+            'model' => Catalog::class,
+            'depends_on' => [
+                'view-catalog',
+                'view-custom-field',
+            ],
+        ],
+        [
+            'name' => 'edit catalog',
+            'ability' => 'edit-catalog',
+            'model' => Catalog::class,
+            'depends_on' => [
+                'view-catalog',
+                'view-custom-field',
+            ],
+        ],
+        [
+            'name' => 'delete catalog',
+            'ability' => 'delete-catalog',
+            'model' => Catalog::class,
+            'depends_on' => [
+                'view-catalog',
             ],
         ],
 

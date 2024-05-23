@@ -13,6 +13,13 @@ export default {
   EDIT_ITEM: 'edit-item',
   VIEW_ITEM: 'view-item',
 
+  // Catalogs
+  CREATE_CATALOG: 'create-catalog',
+  DELETE_CATALOG: 'delete-catalog',
+  EDIT_CATALOG: 'edit-catalog',
+  VIEW_CATALOG: 'view-catalog',
+
+  
   // Tax Types
   CREATE_TAX_TYPE: 'create-tax-type',
   DELETE_TAX_TYPE: 'delete-tax-type',
