@@ -36,7 +36,7 @@ class Expense extends Model implements HasMedia
 
     public function category()
     {
-        return $this->belongsTo(ExpenseCategory::class, 'expense_category_id');
+        return $this->belongsTo(Category::class, 'expense_category_id');
     }
 
     public function customer()
@@ -127,6 +127,7 @@ class Expense extends Model implements HasMedia
         foreach (explode(' ', $search) as $term) {
             $query->whereHas('category', function ($query) use ($term) {
                 $query->where('name', 'LIKE', '%'.$term.'%');
+                $query->where('type', '=', 'expense');
             });
         }
     }
@@ -138,7 +139,9 @@ class Expense extends Model implements HasMedia
 
     public function scopeWhereCategory($query, $categoryId)
     {
-        return $query->where('expenses.expense_category_id', $categoryId);
+        return $query->join('categories', 'categories.id', '=', 'expenses.expense_category_id')
+            ->where('expenses.expense_category_id', $categoryId)
+            ->where('categories.type', 'expense');
     }
 
     public function scopeWhereUser($query, $customer_id)

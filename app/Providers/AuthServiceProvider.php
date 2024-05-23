@@ -35,7 +35,7 @@ class AuthServiceProvider extends ServiceProvider
         \InvoiceShelf\Models\Estimate::class => \InvoiceShelf\Policies\EstimatePolicy::class,
         \InvoiceShelf\Models\Payment::class => \InvoiceShelf\Policies\PaymentPolicy::class,
         \InvoiceShelf\Models\Expense::class => \InvoiceShelf\Policies\ExpensePolicy::class,
-        \InvoiceShelf\Models\ExpenseCategory::class => \InvoiceShelf\Policies\ExpenseCategoryPolicy::class,
+        \InvoiceShelf\Models\Category::class => \InvoiceShelf\Policies\CategoryPolicy::class,
         \InvoiceShelf\Models\PaymentMethod::class => \InvoiceShelf\Policies\PaymentMethodPolicy::class,
         \InvoiceShelf\Models\TaxType::class => \InvoiceShelf\Policies\TaxTypePolicy::class,
         \InvoiceShelf\Models\CustomField::class => \InvoiceShelf\Policies\CustomFieldPolicy::class,

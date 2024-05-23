@@ -4,11 +4,11 @@ namespace InvoiceShelf\Policies;
 
 use Illuminate\Auth\Access\HandlesAuthorization;
 use InvoiceShelf\Models\Expense;
-use InvoiceShelf\Models\ExpenseCategory;
+use InvoiceShelf\Models\Category;
 use InvoiceShelf\Models\User;
 use Silber\Bouncer\BouncerFacade;
 
-class ExpenseCategoryPolicy
+class CategoryPolicy
 {
     use HandlesAuthorization;
 
@@ -31,9 +31,9 @@ class ExpenseCategoryPolicy
      *
      * @return mixed
      */
-    public function view(User $user, ExpenseCategory $expenseCategory)
+    public function view(User $user, Category $category)
     {
-        if (BouncerFacade::can('view-expense', Expense::class) && $user->hasCompany($expenseCategory->company_id)) {
+        if (BouncerFacade::can('view-expense', Expense::class) && $user->hasCompany($category->company_id)) {
             return true;
         }
 
@@ -59,9 +59,9 @@ class ExpenseCategoryPolicy
      *
      * @return mixed
      */
-    public function update(User $user, ExpenseCategory $expenseCategory)
+    public function update(User $user, Category $category)
     {
-        if (BouncerFacade::can('view-expense', Expense::class) && $user->hasCompany($expenseCategory->company_id)) {
+        if (BouncerFacade::can('view-expense', Expense::class) && $user->hasCompany($category->company_id)) {
             return true;
         }
 
@@ -73,9 +73,9 @@ class ExpenseCategoryPolicy
      *
      * @return mixed
      */
-    public function delete(User $user, ExpenseCategory $expenseCategory)
+    public function delete(User $user, Category $category)
     {
-        if (BouncerFacade::can('view-expense', Expense::class) && $user->hasCompany($expenseCategory->company_id)) {
+        if (BouncerFacade::can('view-expense', Expense::class) && $user->hasCompany($category->company_id)) {
             return true;
         }
 
@@ -87,9 +87,9 @@ class ExpenseCategoryPolicy
      *
      * @return mixed
      */
-    public function restore(User $user, ExpenseCategory $expenseCategory)
+    public function restore(User $user, Category $category)
     {
-        if (BouncerFacade::can('view-expense', Expense::class) && $user->hasCompany($expenseCategory->company_id)) {
+        if (BouncerFacade::can('view-expense', Expense::class) && $user->hasCompany($category->company_id)) {
             return true;
         }
 
@@ -101,9 +101,9 @@ class ExpenseCategoryPolicy
      *
      * @return mixed
      */
-    public function forceDelete(User $user, ExpenseCategory $expenseCategory)
+    public function forceDelete(User $user, Category $category)
     {
-        if (BouncerFacade::can('view-expense', Expense::class) && $user->hasCompany($expenseCategory->company_id)) {
+        if (BouncerFacade::can('view-expense', Expense::class) && $user->hasCompany($category->company_id)) {
             return true;
         }
 

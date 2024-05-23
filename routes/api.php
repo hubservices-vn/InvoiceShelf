@@ -23,7 +23,7 @@ use InvoiceShelf\Http\Controllers\V1\Admin\ExchangeRate\GetActiveProviderControl
 use InvoiceShelf\Http\Controllers\V1\Admin\ExchangeRate\GetExchangeRateController;
 use InvoiceShelf\Http\Controllers\V1\Admin\ExchangeRate\GetSupportedCurrenciesController;
 use InvoiceShelf\Http\Controllers\V1\Admin\ExchangeRate\GetUsedCurrenciesController;
-use InvoiceShelf\Http\Controllers\V1\Admin\Expense\ExpenseCategoriesController;
+use InvoiceShelf\Http\Controllers\V1\Admin\Expense\CategoriesController;
 use InvoiceShelf\Http\Controllers\V1\Admin\Expense\ExpensesController;
 use InvoiceShelf\Http\Controllers\V1\Admin\Expense\ShowReceiptController;
 use InvoiceShelf\Http\Controllers\V1\Admin\Expense\UploadReceiptController;
@@ -302,7 +302,7 @@ Route::prefix('/v1')->group(function () {
 
             Route::apiResource('expenses', ExpensesController::class);
 
-            Route::apiResource('categories', ExpenseCategoriesController::class);
+            Route::apiResource('categories', CategoriesController::class);
 
             // Payments
             //----------------------------------

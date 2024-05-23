@@ -4,11 +4,11 @@ namespace InvoiceShelf\Http\Controllers\V1\Admin\Expense;
 
 use Illuminate\Http\Request;
 use InvoiceShelf\Http\Controllers\Controller;
-use InvoiceShelf\Http\Requests\ExpenseCategoryRequest;
-use InvoiceShelf\Http\Resources\ExpenseCategoryResource;
-use InvoiceShelf\Models\ExpenseCategory;
+use InvoiceShelf\Http\Requests\CategoryRequest;
+use InvoiceShelf\Http\Resources\CategoryResource;
+use InvoiceShelf\Models\Category;
 
-class ExpenseCategoriesController extends Controller
+class CategoriesController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -17,16 +17,16 @@ class ExpenseCategoriesController extends Controller
      */
     public function index(Request $request)
     {
-        $this->authorize('viewAny', ExpenseCategory::class);
+        $this->authorize('viewAny', Category::class);
 
         $limit = $request->has('limit') ? $request->limit : 5;
 
-        $categories = ExpenseCategory::applyFilters($request->all())
+        $categories = Category::applyFilters($request->all())
             ->whereCompany()
             ->latest()
             ->paginateData($limit);
 
-        return ExpenseCategoryResource::collection($categories);
+        return CategoryResource::collection($categories);
     }
 
     /**
@@ -35,13 +35,13 @@ class ExpenseCategoriesController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(ExpenseCategoryRequest $request)
+    public function store(CategoryRequest $request)
     {
-        $this->authorize('create', ExpenseCategory::class);
+        $this->authorize('create', Category::class);
 
-        $category = ExpenseCategory::create($request->getExpenseCategoryPayload());
+        $category = Category::create($request->getCategoryPayload());
 
-        return new ExpenseCategoryResource($category);
+        return new CategoryResource($category);
     }
 
     /**
@@ -49,27 +49,27 @@ class ExpenseCategoriesController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function show(ExpenseCategory $category)
+    public function show(Category $category)
     {
         $this->authorize('view', $category);
 
-        return new ExpenseCategoryResource($category);
+        return new CategoryResource($category);
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \InvoiceShelf\Models\ExpenseCategory  $ExpenseCategory
+     * @param  \InvoiceShelf\Models\Category  $Category
      * @return \Illuminate\Http\Response
      */
-    public function update(ExpenseCategoryRequest $request, ExpenseCategory $category)
+    public function update(CategoryRequest $request, Category $category)
     {
         $this->authorize('update', $category);
 
-        $category->update($request->getExpenseCategoryPayload());
+        $category->update($request->getCategoryPayload());
 
-        return new ExpenseCategoryResource($category);
+        return new CategoryResource($category);
     }
 
     /**
@@ -78,7 +78,7 @@ class ExpenseCategoriesController extends Controller
      * @param  \InvoiceShelf\ExpensesCategory  $category
      * @return \Illuminate\Http\Response
      */
-    public function destroy(ExpenseCategory $category)
+    public function destroy(Category $category)
     {
         $this->authorize('delete', $category);
 

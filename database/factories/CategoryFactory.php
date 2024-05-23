@@ -3,17 +3,17 @@
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use InvoiceShelf\Models\ExpenseCategory;
+use InvoiceShelf\Models\Category;
 use InvoiceShelf\Models\User;
 
-class ExpenseCategoryFactory extends Factory
+class CategoryFactory extends Factory
 {
     /**
      * The name of the factory's corresponding model.
      *
      * @var string
      */
-    protected $model = ExpenseCategory::class;
+    protected $model = Category::class;
 
     /**
      * Define the model's default state.

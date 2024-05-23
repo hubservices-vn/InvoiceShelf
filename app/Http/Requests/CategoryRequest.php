@@ -4,7 +4,7 @@ namespace InvoiceShelf\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class ExpenseCategoryRequest extends FormRequest
+class CategoryRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -33,7 +33,7 @@ class ExpenseCategoryRequest extends FormRequest
         ];
     }
 
-    public function getExpenseCategoryPayload()
+    public function getCategoryPayload()
     {
         return collect($this->validated())
             ->merge([

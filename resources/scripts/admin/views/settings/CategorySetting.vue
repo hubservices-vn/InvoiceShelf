@@ -22,7 +22,7 @@
     <BaseTable
       ref="table"
       :data="fetchData"
-      :columns="ExpenseCategoryColumns"
+      :columns="CategoryColumns"
       class="mt-16"
     >
       <template #cell-description="{ row }">
@@ -32,7 +32,7 @@
       </template>
 
       <template #cell-actions="{ row }">
-        <ExpenseCategoryDropdown
+        <CategoryDropdown
           :row="row.data"
           :table="table"
           :load-data="refreshTable"
@@ -48,7 +48,7 @@ import { useCategoryStore } from '@/scripts/admin/stores/category'
 import { useModalStore } from '@/scripts/stores/modal'
 import { ref, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
-import ExpenseCategoryDropdown from '@/scripts/admin/components/dropdowns/ExpenseCategoryIndexDropdown.vue'
+import CategoryDropdown from '@/scripts/admin/components/dropdowns/CategoryIndexDropdown.vue'
 import CategoryModal from '@/scripts/admin/components/modal-components/CategoryModal.vue'
 
 const categoryStore = useCategoryStore()
@@ -59,7 +59,7 @@ const { t } = useI18n()
 
 const table = ref(null)
 
-const ExpenseCategoryColumns = computed(() => {
+const CategoryColumns = computed(() => {
   return [
     {
       key: 'name',

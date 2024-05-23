@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 use InvoiceShelf\Models\Currency;
 use InvoiceShelf\Models\Customer;
 use InvoiceShelf\Models\Expense;
-use InvoiceShelf\Models\ExpenseCategory;
+use InvoiceShelf\Models\Category;
 use InvoiceShelf\Models\User;
 
 class ExpenseFactory extends Factory
@@ -27,7 +27,7 @@ class ExpenseFactory extends Factory
     {
         return [
             'expense_date' => $this->faker->date('Y-m-d', 'now'),
-            'expense_category_id' => ExpenseCategory::factory(),
+            'expense_category_id' => Category::factory(),
             'company_id' => User::find(1)->companies()->first()->id,
             'amount' => $this->faker->randomDigitNotNull,
             'notes' => $this->faker->text,

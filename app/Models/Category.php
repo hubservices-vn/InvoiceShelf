@@ -6,7 +6,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class ExpenseCategory extends Model
+class Category extends Model
 {
     use HasFactory;
 
@@ -21,7 +21,7 @@ class ExpenseCategory extends Model
 
     public function expenses()
     {
-        return $this->hasMany(Expense::class);
+        return $this->hasMany(Expense::class, "expense_category_id");
     }
 
     public function company()
@@ -51,6 +51,16 @@ class ExpenseCategory extends Model
         $query->orWhere('id', $category_id);
     }
 
+    public function scopeWhereCategoryType($query, $category_type)
+    {
+        $query->orWhere('type', $category_type);
+    }
+
+    public function scopeWhereCategoryParent($query, $parent_id)
+    {
+        $query->orWhere('parent_id', $parent_id);
+    }
+
     public function scopeWhereSearch($query, $search)
     {
         $query->where('name', 'LIKE', '%'.$search.'%');
@@ -59,6 +69,14 @@ class ExpenseCategory extends Model
     public function scopeApplyFilters($query, array $filters)
     {
         $filters = collect($filters);
+
+        if ($filters->get('parent')) {
+            $query->whereCategoryParent($filters->get('parent'));
+        }
+
+        if ($filters->get('type')) {
+            $query->whereCategoryType($filters->get('type'));
+        }
 
         if ($filters->get('category_id')) {
             $query->whereCategory($filters->get('category_id'));

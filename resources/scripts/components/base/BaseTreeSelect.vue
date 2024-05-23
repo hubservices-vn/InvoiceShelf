@@ -32,34 +32,38 @@ const props = defineProps({
     type: [String, Number, Boolean, Object, Array],
     default: '',
   },
+  required: {
+    type: Boolean,
+    default: false,
+  },
   placeholder: {
-      type: String,
+    type: String,
   },
   noChildrenText: {
-      type: String,
-      default: 'No sub-options.'
-    },
-    /**
-     * Text displayed when there are no available options.
-     */
-     noOptionsText: {
-      type: String,
-      default: 'No options available.'
-    },
+    type: String,
+    default: 'No sub-options.',
+  },
+  /**
+   * Text displayed when there are no available options.
+   */
+  noOptionsText: {
+    type: String,
+    default: 'No options available.',
+  },
 
-    /**
-     * Text displayed when there are no matching search results.
-     */
-    noResultsText: {
-      type: String,
-      default: 'No results found...'
-    },
-        /**
-     * Generates a hidden <input /> tag with this field name for html forms.
-     */
-     name: {
-      type: String
-    },
+  /**
+   * Text displayed when there are no matching search results.
+   */
+  noResultsText: {
+    type: String,
+    default: 'No results found...',
+  },
+  /**
+   * Generates a hidden <input /> tag with this field name for html forms.
+   */
+  name: {
+    type: String,
+  },
 })
 
 const itemsFlatToLeaf = (items) => {
@@ -119,6 +123,8 @@ watch(selectedValue.value, (val) => {
     :no-children-text="noChildrenText"
     :no-results-text="noResultsText"
     :no-options-text="noOptionsText"
+    :required="required"
+    :clearable="false"
     :multiple="multiple"
     :placeholder="placeholder"
     :options="itemsFlatToLeaf(options)"

@@ -1,10 +1,10 @@
 <?php
 
-namespace InvoiceShelf\Http\Resources;
+namespace InvoiceShelf\Http\Resources\Customer;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class ExpenseCategoryResource extends JsonResource
+class CategoryResource extends JsonResource
 {
     /**
      * Transform the resource into an array.

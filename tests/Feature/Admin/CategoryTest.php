@@ -1,9 +1,9 @@
 <?php
 
 use Illuminate\Support\Facades\Artisan;
-use InvoiceShelf\Http\Controllers\V1\Admin\Expense\ExpenseCategoriesController;
-use InvoiceShelf\Http\Requests\ExpenseCategoryRequest;
-use InvoiceShelf\Models\ExpenseCategory;
+use InvoiceShelf\Http\Controllers\V1\Admin\Expense\CategoriesController;
+use InvoiceShelf\Http\Requests\CategoryRequest;
+use InvoiceShelf\Models\Category;
 use InvoiceShelf\Models\User;
 use Laravel\Sanctum\Sanctum;
 
@@ -33,13 +33,13 @@ test('get categories', function () {
 });
 
 test('create category', function () {
-    $category = ExpenseCategory::factory()->raw();
+    $category = Category::factory()->raw();
 
     $response = postJson('api/v1/categories', $category);
 
     $response->assertStatus(201);
 
-    $this->assertDatabaseHas('expense_categories', [
+    $this->assertDatabaseHas('categories', [
         'name' => $category['name'],
         'description' => $category['description'],
     ]);
@@ -47,26 +47,26 @@ test('create category', function () {
 
 test('store validates using a form request', function () {
     $this->assertActionUsesFormRequest(
-        ExpenseCategoriesController::class,
+        CategoriesController::class,
         'store',
-        ExpenseCategoryRequest::class
+        CategoryRequest::class
     );
 });
 
 test('get category', function () {
-    $category = ExpenseCategory::factory()->create();
+    $category = Category::factory()->create();
 
     getJson("api/v1/categories/{$category->id}")->assertOk();
 });
 
 test('update category', function () {
-    $category = ExpenseCategory::factory()->create();
+    $category = Category::factory()->create();
 
-    $category2 = ExpenseCategory::factory()->raw();
+    $category2 = Category::factory()->raw();
 
     putJson('api/v1/categories/'.$category->id, $category2)->assertOk();
 
-    $this->assertDatabaseHas('expense_categories', [
+    $this->assertDatabaseHas('categories', [
         'id' => $category->id,
         'name' => $category2['name'],
         'description' => $category2['description'],
@@ -75,14 +75,14 @@ test('update category', function () {
 
 test('update validates using a form request', function () {
     $this->assertActionUsesFormRequest(
-        ExpenseCategoriesController::class,
+        CategoriesController::class,
         'update',
-        ExpenseCategoryRequest::class
+        CategoryRequest::class
     );
 });
 
 test('delete category', function () {
-    $category = ExpenseCategory::factory()->create();
+    $category = Category::factory()->create();
 
     deleteJson('api/v1/categories/'.$category->id)
         ->assertOk()

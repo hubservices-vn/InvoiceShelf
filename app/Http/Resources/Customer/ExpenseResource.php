@@ -35,7 +35,7 @@ class ExpenseResource extends JsonResource
                 return new CustomerResource($this->customer);
             }),
             'expense_category' => $this->when($this->category()->exists(), function () {
-                return new ExpenseCategoryResource($this->category);
+                return new CategoryResource($this->category);
             }),
             'fields' => $this->when($this->fields()->exists(), function () {
                 return CustomFieldValueResource::collection($this->fields);

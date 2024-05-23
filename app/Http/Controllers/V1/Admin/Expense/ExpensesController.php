@@ -25,9 +25,12 @@ class ExpensesController extends Controller
         $expenses = Expense::with('category', 'creator', 'fields')
             ->whereCompany()
             ->leftJoin('customers', 'customers.id', '=', 'expenses.customer_id')
-            ->join('expense_categories', 'expense_categories.id', '=', 'expenses.expense_category_id')
+            ->leftJoin('categories', function($join) {
+                $join->on('categories.id', '=', 'expenses.expense_category_id');
+                $join->on('categories.type', '=', 'expense');
+            })
             ->applyFilters($request->all())
-            ->select('expenses.*', 'expense_categories.name', 'customers.name as user_name')
+            ->select('expenses.*', 'categories.name', 'customers.name as user_name')
             ->paginateData($limit);
 
         return ExpenseResource::collection($expenses)

@@ -196,16 +196,16 @@
         <p class="expenses-title">@lang('pdf_expenses_label')</p>
         <div class="expenses-table-container">
             <table class="expenses-table">
-                @foreach ($expenseCategories as $expenseCategory)
+                @foreach ($expenseCategories as $category)
                 <tr>
                     <td>
                         <p class="expense-title">
-                            {{ $expenseCategory->category->name }}
+                            {{ $category->category->name }}
                         </p>
                     </td>
                     <td>
                         <p class="expense-amount">
-                            {!! format_money_pdf($expenseCategory->total_amount, $currency) !!}
+                            {!! format_money_pdf($category->total_amount, $currency) !!}
                         </p>
                     </td>
                 </tr>

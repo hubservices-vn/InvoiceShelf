@@ -36,7 +36,7 @@ class ExpenseResource extends JsonResource
                 return new CustomerResource($this->customer);
             }),
             'expense_category' => $this->when($this->category()->exists(), function () {
-                return new ExpenseCategoryResource($this->category);
+                return new CategoryResource($this->category);
             }),
             'creator' => $this->when($this->creator()->exists(), function () {
                 return new UserResource($this->creator);

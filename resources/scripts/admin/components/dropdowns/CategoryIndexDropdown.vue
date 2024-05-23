@@ -2,7 +2,7 @@
   <BaseDropdown>
     <template #activator>
       <BaseButton
-        v-if="route.name === 'expenseCategorys.view'"
+        v-if="route.name === 'categorys.view'"
         variant="primary"
       >
         <BaseIcon name="DotsHorizontalIcon" class="h-5 text-white" />
@@ -10,10 +10,10 @@
       <BaseIcon v-else name="DotsHorizontalIcon" class="h-5 text-gray-500" />
     </template>
 
-    <!-- edit expenseCategory  -->
+    <!-- edit category  -->
     <BaseDropdownItem
       v-if="userStore.hasAbilities(abilities.EDIT_EXPENSE)"
-      @click="editExpenseCategory(row.id)"
+      @click="editCategory(row.id)"
     >
       <BaseIcon
         name="PencilIcon"
@@ -22,10 +22,10 @@
       {{ $t('general.edit') }}
     </BaseDropdownItem>
 
-    <!-- delete expenseCategory  -->
+    <!-- delete category  -->
     <BaseDropdownItem
       v-if="userStore.hasAbilities(abilities.DELETE_EXPENSE)"
-      @click="removeExpenseCategory(row.id)"
+      @click="removeCategory(row.id)"
     >
       <BaseIcon
         name="TrashIcon"
@@ -65,15 +65,15 @@ const props = defineProps({
 const dialogStore = useDialogStore()
 const notificationStore = useNotificationStore()
 const { t } = useI18n()
-const expenseCategoryStore = useCategoryStore()
+const categoryStore = useCategoryStore()
 const route = useRoute()
 const userStore = useUserStore()
 const modalStore = useModalStore()
 
 const $utils = inject('utils')
 
-function editExpenseCategory(data) {
-  expenseCategoryStore.fetchCategory(data)
+function editCategory(data) {
+  categoryStore.fetchCategory(data)
   modalStore.openModal({
     title: t('settings.expense_category.edit_category'),
     componentName: 'CategoryModal',
@@ -82,7 +82,7 @@ function editExpenseCategory(data) {
   })
 }
 
-function removeExpenseCategory(id) {
+function removeCategory(id) {
   dialogStore
     .openDialog({
       title: t('general.are_you_sure'),
@@ -94,7 +94,7 @@ function removeExpenseCategory(id) {
       size: 'lg',
     })
     .then(async () => {
-      let response = await expenseCategoryStore.deleteCategory(id)
+      let response = await categoryStore.deleteCategory(id)
       if (response.data.success) {
         props.loadData && props.loadData()
         return true

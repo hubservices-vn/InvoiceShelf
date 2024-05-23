@@ -26,6 +26,8 @@ export const useCategoryStore = (useWindow = false) => {
 
     actions: {
       fetchCategories(params) {
+        params = {...params, type: 'expense'}
+        console.log(params)
         return new Promise((resolve, reject) => {
           axios
             .get(`/api/v1/categories`, { params })

@@ -49,8 +49,8 @@ const CustomFieldsIndex = () =>
   import('@/scripts/admin/views/settings/CustomFieldsSetting.vue')
 const NotesSetting = () =>
   import('@/scripts/admin/views/settings/NotesSetting.vue')
-const ExpenseCategory = () =>
-  import('@/scripts/admin/views/settings/ExpenseCategorySetting.vue')
+const Category = () =>
+  import('@/scripts/admin/views/settings/CategorySetting.vue')
 const ExchangeRateSetting = () =>
   import('@/scripts/admin/views/settings/ExchangeRateProviderSetting.vue')
 const MailConfig = () =>
@@ -306,7 +306,7 @@ export default [
             path: 'expense-category',
             name: 'expense.category',
             meta: { ability: abilities.VIEW_EXPENSE },
-            component: ExpenseCategory,
+            component: Category,
           },
 
           {
