@@ -116,8 +116,7 @@ class EnvironmentManager
             $dbEnv['DB_PORT'] = $request->get('database_port');
             $dbEnv['DB_DATABASE'] = $request->get('database_name');
             $dbEnv['DB_USERNAME'] = $request->get('database_username');
-            $dbEnv['DB_PASSWORD'] = $request->get('database_password');
-
+            $dbEnv['DB_PASSWORD'] = '"' . $request->get('database_password') . '"';
         } else {
             $dbEnv['DB_DATABASE'] = $request->get('database_name');
         }

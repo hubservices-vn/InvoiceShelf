@@ -72,6 +72,7 @@ export const useUserStore = (useWindow = false) => {
             .post('/api/v1/me/upload-avatar', data)
             .then((response) => {
               this.currentUser.avatar = response.data.data.avatar
+              console.log(response)
               resolve(response)
             })
             .catch((err) => {

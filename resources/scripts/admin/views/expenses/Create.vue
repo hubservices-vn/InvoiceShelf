@@ -70,7 +70,28 @@
             :content-loading="isFetchingInitialData"
             required
           >
-            <BaseMultiselect
+            <BaseTreeSelect
+              name="parent_id"
+              value-prop="id"
+              label-prop="name"
+              :placeholder="$t('expenses.categories.select_a_category')"
+              parent-prop="parent_id"
+              :options="categories"
+              :content-loading="isFetchingInitialData"
+              :loading="categoryLoading"
+              v-model="expenseStore.currentExpense.expense_category_id"
+            >
+              <template v-slot:after-list>
+                <BaseSelectAction @click="openCategoryModal">
+                  <BaseIcon
+                    name="PlusIcon"
+                    class="h-4 mr-2 -ml-2 text-center text-primary-400"
+                  />
+                  {{ $t('settings.category.add_new_category') }}
+                </BaseSelectAction>
+              </template>
+            </BaseTreeSelect>
+            <!-- <BaseMultiselect
               v-model="expenseStore.currentExpense.expense_category_id"
               :content-loading="isFetchingInitialData"
               value-prop="id"
@@ -95,7 +116,7 @@
                   {{ $t('settings.category.add_new_category') }}
                 </BaseSelectAction>
               </template>
-            </BaseMultiselect>
+            </BaseMultiselect> -->
           </BaseInputGroup>
 
           <BaseInputGroup
@@ -335,18 +356,18 @@ const rules = computed(() => {
         required: helpers.withMessage(t('validation.required'), required),
         minValue: helpers.withMessage(
           t('validation.price_minvalue'),
-          minValue(0.1)
+          minValue(0.1),
         ),
         maxLength: helpers.withMessage(
           t('validation.price_maxlength'),
-          maxLength(20)
+          maxLength(20),
         ),
       },
 
       notes: {
         maxLength: helpers.withMessage(
           t('validation.description_maxlength'),
-          maxLength(65000)
+          maxLength(65000),
         ),
       },
       currency_id: {
@@ -359,7 +380,7 @@ const rules = computed(() => {
         }),
         decimal: helpers.withMessage(
           t('validation.valid_exchange_rate'),
-          decimal
+          decimal,
         ),
       },
     },
@@ -380,11 +401,11 @@ const amountData = computed({
 const isEdit = computed(() => route.name === 'expenses.edit')
 
 const pageTitle = computed(() =>
-  isEdit.value ? t('expenses.edit_expense') : t('expenses.new_expense')
+  isEdit.value ? t('expenses.edit_expense') : t('expenses.new_expense'),
 )
 
 const receiptDownloadUrl = computed(() =>
-  isEdit.value ? `/reports/expenses/${route.params.id}/download-receipt` : ''
+  isEdit.value ? `/reports/expenses/${route.params.id}/download-receipt` : '',
 )
 
 expenseStore.resetCurrentExpenseData()
@@ -406,32 +427,43 @@ function openCategoryModal() {
     title: t('settings.category.add_category'),
     componentName: 'CategoryModal',
     size: 'sm',
+    refreshData: searchCategory,
+    data: { type: 'expense' },
   })
 }
 
 function onCurrencyChange(v) {
   expenseStore.currentExpense.selectedCurrency = globalStore.currencies.find(
-    (c) => c.id === v
+    (c) => c.id === v,
   )
 }
 
-async function searchCategory(search) {
-  let res = await categoryStore.fetchCategories({ search })
-  if(res.data.data.length>0 && categoryStore.editCategory) {
-    let categoryFound = res.data.data.find((c) => c.id==categoryStore.editCategory.id)
-    if(!categoryFound) {
+const categories = ref([])
+const categoryLoading = ref(false)
+
+async function searchCategory(search = undefined) {
+  categoryLoading.value = true
+  let res = await categoryStore.fetchCategories({ search, type: 'expense' })
+  if (res.data.data.length > 0 && categoryStore.editCategory) {
+    let categoryFound = res.data.data.find(
+      (c) => c.id == categoryStore.editCategory.id,
+    )
+    if (!categoryFound) {
       let edit_category = Object.assign({}, categoryStore.editCategory)
       res.data.data.unshift(edit_category)
     }
   }
-  return res.data.data
+  categories.value = res.data?.data || []
+  categoryLoading.value = false
 }
 
 async function searchCustomer(search) {
   let res = await customerStore.fetchCustomers({ search })
-  if(res.data.data.length>0 && customerStore.editCustomer) {
-    let customerFound = res.data.data.find((c) => c.id==customerStore.editCustomer.id)
-    if(!customerFound) {
+  if (res.data.data.length > 0 && customerStore.editCustomer) {
+    let customerFound = res.data.data.find(
+      (c) => c.id == customerStore.editCustomer.id,
+    )
+    if (!customerFound) {
       let edit_customer = Object.assign({}, customerStore.editCustomer)
       res.data.data.unshift(edit_customer)
     }
@@ -456,16 +488,18 @@ async function loadData() {
     expenseStore.currentExpense.currency_id =
       expenseStore.currentExpense.selectedCurrency.id
 
-    if(expenseData.data) {
-      if(!categoryStore.editCategory && expenseData.data.data.expense_category) {
+    if (expenseData.data) {
+      if (
+        !categoryStore.editCategory &&
+        expenseData.data.data.expense_category
+      ) {
         categoryStore.editCategory = expenseData.data.data.expense_category
       }
 
-      if(!customerStore.editCustomer && expenseData.data.data.customer) {
+      if (!customerStore.editCustomer && expenseData.data.data.customer) {
         customerStore.editCustomer = expenseData.data.data.customer
       }
     }
-
   } else if (route.query.customer) {
     expenseStore.currentExpense.customer_id = route.query.customer
   }
@@ -489,7 +523,7 @@ async function submitForm() {
       await expenseStore.updateExpense({
         id: route.params.id,
         data: formData,
-        isAttachmentReceiptRemoved: isAttachmentReceiptRemoved.value
+        isAttachmentReceiptRemoved: isAttachmentReceiptRemoved.value,
       })
     } else {
       await expenseStore.addExpense(formData)
@@ -509,5 +543,9 @@ onBeforeUnmount(() => {
   expenseStore.resetCurrentExpenseData()
   customerStore.editCustomer = null
   categoryStore.editCategory = null
+})
+
+onMounted(() => {
+  searchCategory()
 })
 </script>

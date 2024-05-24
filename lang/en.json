@@ -1240,6 +1240,8 @@
       "add_category": "Add Category",
       "edit_category": "Edit Category",
       "category_name": "Category Name",
+      "category_type": "Type",
+      "category_parent": "Parent",
       "category_description": "Description",
       "created_message": "Category created successfully",
       "deleted_message": "Category deleted successfully",

@@ -54,7 +54,7 @@ export default class InvoiceShelf {
     app.use(createPinia())
     app.provide('utils', utils)
     app.directive('tooltip', VTooltip)
-
+    
     app.mount('body')
   }
 }

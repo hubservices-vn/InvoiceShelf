@@ -27,6 +27,21 @@ class CategoryRequest extends FormRequest
             'name' => [
                 'required',
             ],
+            'complete_name' => [
+                'nullable',
+            ],
+            'type' => [
+                'required',
+            ],
+            'parent_id' => [
+                'nullable',
+            ],
+            'parent_path' => [
+                'nullable',
+            ],
+            'image_url' => [
+                'nullable',
+            ],
             'description' => [
                 'nullable',
             ],

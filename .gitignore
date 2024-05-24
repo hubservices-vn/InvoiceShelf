@@ -23,3 +23,5 @@ Homestead.yaml
 /storage/fonts*
 package-lock.json
 *.timestamp*.mjs
+bun.lockb
+*.log

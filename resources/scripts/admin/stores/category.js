@@ -15,6 +15,10 @@ export const useCategoryStore = (useWindow = false) => {
       currentCategory: {
         id: null,
         name: '',
+        parent_id: null,
+        type: '',
+        image_url: '',
+        image_url: '',
         description: '',
       },
       editCategory: null
@@ -26,8 +30,6 @@ export const useCategoryStore = (useWindow = false) => {
 
     actions: {
       fetchCategories(params) {
-        params = {...params, type: 'expense'}
-        console.log(params)
         return new Promise((resolve, reject) => {
           axios
             .get(`/api/v1/categories`, { params })

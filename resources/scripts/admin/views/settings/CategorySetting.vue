@@ -21,6 +21,8 @@
 
     <BaseTable
       ref="table"
+      :sort-by="'complete_name'"
+      :sort-order="'asc'"
       :data="fetchData"
       :columns="CategoryColumns"
       class="mt-16"
@@ -43,13 +45,13 @@
 </template>
 
 <script setup>
-import { useDialogStore } from '@/scripts/stores/dialog'
-import { useCategoryStore } from '@/scripts/admin/stores/category'
-import { useModalStore } from '@/scripts/stores/modal'
-import { ref, computed } from 'vue'
-import { useI18n } from 'vue-i18n'
 import CategoryDropdown from '@/scripts/admin/components/dropdowns/CategoryIndexDropdown.vue'
 import CategoryModal from '@/scripts/admin/components/modal-components/CategoryModal.vue'
+import { useCategoryStore } from '@/scripts/admin/stores/category'
+import { useDialogStore } from '@/scripts/stores/dialog'
+import { useModalStore } from '@/scripts/stores/modal'
+import { computed, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 const categoryStore = useCategoryStore()
 const dialogStore = useDialogStore()
@@ -62,8 +64,14 @@ const table = ref(null)
 const CategoryColumns = computed(() => {
   return [
     {
-      key: 'name',
+      key: 'complete_name',
       label: t('settings.category.category_name'),
+      thClass: 'extra',
+      tdClass: 'font-medium text-gray-900',
+    },
+    {
+      key: 'type',
+      label: t('settings.category.category_type'),
       thClass: 'extra',
       tdClass: 'font-medium text-gray-900',
     },

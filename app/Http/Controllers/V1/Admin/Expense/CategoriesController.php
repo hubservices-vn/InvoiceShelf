@@ -19,10 +19,11 @@ class CategoriesController extends Controller
     {
         $this->authorize('viewAny', Category::class);
 
-        $limit = $request->has('limit') ? $request->limit : 5;
+        $limit = $request->has('limit') ? $request->limit : 10;
 
         $categories = Category::applyFilters($request->all())
             ->whereCompany()
+            ->orderBy('parent_path')
             ->latest()
             ->paginateData($limit);
 
@@ -40,7 +41,13 @@ class CategoriesController extends Controller
         $this->authorize('create', Category::class);
 
         $category = Category::create($request->getCategoryPayload());
-
+        $parentIds = $category->allParentIds();
+        $parentNames = $category->allParentNames();
+        array_push($parentIds, $category->id);
+        array_push($parentNames, $category->name);
+        $category->parent_path = implode('/', $parentIds);
+        $category->complete_name = implode(' / ', $parentNames);
+        $category->save();
         return new CategoryResource($category);
     }
 
@@ -82,11 +89,15 @@ class CategoriesController extends Controller
     {
         $this->authorize('delete', $category);
 
-        if ($category->expenses() && $category->expenses()->count() > 0) {
+        // if ($category->expenses() && $category->expenses()->count() > 0) {
+        //     return respondJson('expense_attached', 'Expense Attached');
+        // }
+
+        try{
+            $category->delete();
+        }catch (\Exception $e){
             return respondJson('expense_attached', 'Expense Attached');
         }
-
-        $category->delete();
 
         return response()->json([
             'success' => true,

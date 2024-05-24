@@ -10,7 +10,7 @@ class Category extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'company_id', 'description'];
+    protected $fillable = ['name', 'complete_name', 'company_id', 'type', 'parent_id', 'parent_path', 'image_url', 'description'];
 
     /**
      * The accessors to append to the model's array form.
@@ -18,6 +18,54 @@ class Category extends Model
      * @var array
      */
     protected $appends = ['amount', 'formattedCreatedAt'];
+
+    public function parent()
+    {
+        return $this->belongsTo(self::class, 'parent_id');
+    }
+
+    // for first level child this will works enough
+    public function children()
+    {
+        return $this->hasMany(self::class, 'parent_id');
+    }
+
+    // and here is the trick for nestable child. 
+    public static function nestable($categories)
+    {
+        foreach ($categories as $category) {
+            if (!$category->children->isEmpty()) {
+                $category->children = self::nestable($category->children);
+            }
+        }
+
+        return $categories;
+    }
+
+    public function allParent()
+    {
+        $parents = [];
+        $parent = $this->parent;
+        while ($parent) {
+            array_push($parents, $parent);
+            $parent = $parent->parent;
+        }
+        return array_reverse($parents);
+    }
+
+    public function allParentIds()
+    {
+        return array_map(function ($parent) {
+            return $parent->id;
+        }, $this->allParent());
+    }
+
+    public function allParentNames()
+    {
+        return array_map(function ($parent) {
+            return $parent->name;
+        }, $this->allParent());
+    }
 
     public function expenses()
     {
@@ -63,7 +111,7 @@ class Category extends Model
 
     public function scopeWhereSearch($query, $search)
     {
-        $query->where('name', 'LIKE', '%'.$search.'%');
+        $query->where('name', 'LIKE', '%' . $search . '%');
     }
 
     public function scopeApplyFilters($query, array $filters)

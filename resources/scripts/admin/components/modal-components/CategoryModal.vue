@@ -29,7 +29,45 @@
               @input="v$.currentCategory.name.$touch()"
             />
           </BaseInputGroup>
-
+          <BaseInputGroup :label="$t('categories.type')" 
+          :error="
+              v$.currentCategory.type.$error &&
+              v$.currentCategory.type.$errors[0].$message
+            "
+            required>
+            <BaseMultiselect
+              v-model="categoryStore.currentCategory.type"
+              :options="categoryTypes"
+              value-prop="id"
+              :disabled="!!modalStore.data?.type"
+              searchable
+              :placeholder="$t('categories.select_type')"
+              :max-height="200"
+              class="mt-1 md:mt-0"
+            />
+          </BaseInputGroup>
+          <BaseInputGroup :label="$t('categories.parent')">
+            <BaseTreeSelect
+              name="parent_id"
+              value-prop="id"
+              label-prop="name"
+              :placeholder="$t('categories.select_parent')"
+              parent-prop="parent_id"
+              :options="categories"
+              v-model="categoryStore.currentCategory.parent_id"
+            />
+          </BaseInputGroup>
+          <BaseInputGroup
+            :label="$t('categories.image')"
+            :content-loading="isFetchingInitialData"
+          >
+            <BaseFileUploader
+              v-model="imgFile"
+              accept="image/*"
+              @change="onFileInputChange"
+              @remove="onFileInputRemove"
+            />
+          </BaseInputGroup>
           <BaseInputGroup
             :label="$t('expenses.description')"
             :error="
@@ -48,13 +86,7 @@
       </div>
 
       <div
-        class="
-          z-0
-          flex
-          justify-end
-          p-4
-          border-t border-gray-200 border-solid border-modal-bg
-        "
+        class="z-0 flex justify-end p-4 border-t border-gray-200 border-solid border-modal-bg"
       >
         <BaseButton
           type="button"
@@ -88,7 +120,7 @@
 <script setup>
 import { useCategoryStore } from '@/scripts/admin/stores/category'
 import { useModalStore } from '@/scripts/stores/modal'
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { required, minLength, maxLength, helpers } from '@vuelidate/validators'
 import { useVuelidate } from '@vuelidate/core'
 import { useI18n } from 'vue-i18n'
@@ -99,6 +131,16 @@ const { t } = useI18n()
 
 let isSaving = ref(false)
 
+const imgFiles = ref(null)
+const categories = ref([])
+const categoryTypes = [
+  { id: 'item', label: 'Item' },
+  { id: 'invoice', label: 'Invoice' },
+  { id: 'expense', label: 'Expense' },
+  { id: 'estimate', label: 'Estimate' },
+  { id: 'customer', label: 'Customer' },
+]
+
 const rules = computed(() => {
   return {
     currentCategory: {
@@ -106,13 +148,16 @@ const rules = computed(() => {
         required: helpers.withMessage(t('validation.required'), required),
         minLength: helpers.withMessage(
           t('validation.name_min_length', { count: 3 }),
-          minLength(3)
+          minLength(3),
         ),
+      },
+      type: {
+        required: helpers.withMessage(t('validation.required'), required),
       },
       description: {
         maxLength: helpers.withMessage(
           t('validation.description_maxlength', { count: 255 }),
-          maxLength(255)
+          maxLength(255),
         ),
       },
     },
@@ -121,10 +166,11 @@ const rules = computed(() => {
 
 const v$ = useVuelidate(
   rules,
-  computed(() => categoryStore)
+  computed(() => categoryStore),
 )
 
 const modalActive = computed(() => {
+  categoryStore.currentCategory.type = modalStore.data?.type
   return modalStore.active && modalStore.componentName === 'CategoryModal'
 })
 
@@ -158,4 +204,17 @@ function closeCategoryModal() {
     v$.value.$reset()
   }, 300)
 }
+
+watch(
+  () => categoryStore.currentCategory.type,
+  (type) => {
+    if (!type) {
+      categories.value = []
+      return
+    }
+    categoryStore.fetchCategories({ limit: 'all', type }).then((rs) => {
+      categories.value = rs.data?.data || []
+    })
+  },
+)
 </script>

@@ -1,5 +1,5 @@
 <script setup>
-import { computed, ref, watch } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 import Treeselect from 'vue3-treeselect'
 import 'vue3-treeselect/dist/vue3-treeselect.css'
 
@@ -10,10 +10,14 @@ const props = defineProps({
     default: 'label',
   },
   multiple: {
-    type: Object,
+    type: Boolean,
     required: false,
     default: false,
   },
+  contentLoading: {
+      type: Boolean,
+      default: false,
+    },
   valueProp: {
     type: String,
     required: false,
@@ -33,6 +37,10 @@ const props = defineProps({
     default: '',
   },
   required: {
+    type: Boolean,
+    default: false,
+  },
+  loading: {
     type: Boolean,
     default: false,
   },
@@ -69,8 +77,9 @@ const props = defineProps({
 const itemsFlatToLeaf = (items) => {
   const itemObj = {}
   const leafArray = []
-  items.forEach((item) => {
+  items?.forEach((item) => {
     const id = item[props.valueProp]
+    if (!id) return
     const label = item[props.labelProp]
     const parentId = item[props.parentProp]
     const node = { ...item, id, label, children: [] }
@@ -107,17 +116,29 @@ watch(
   },
 )
 
-watch(selectedValue.value, (val) => {
-  if (props.valueProp) {
-    emit('update:modelValue', val[props.valueProp])
-  } else {
-    emit('update:modelValue', val)
-  }
-})
+watch(
+  () => selectedValue.value,
+  (val) => {
+    if (val[props.valueProp]) {
+      emit('update:modelValue', val[props.valueProp])
+    } else {
+      emit('update:modelValue', val)
+    }
+  },
+)
+onMounted(() => {})
 </script>
 
 <template>
-  <treeselect
+  <BaseContentPlaceholders v-if="contentLoading">
+    <BaseContentPlaceholdersBox
+      :rounded="true"
+      class="w-full"
+      style="height: 40px"
+    />
+  </BaseContentPlaceholders>
+  <treeselect v-else
+    :class="loading ? 'vue-treeselect__is-loading' : ''"
     v-model="selectedValue"
     :name="name"
     :no-children-text="noChildrenText"
@@ -128,7 +149,14 @@ watch(selectedValue.value, (val) => {
     :multiple="multiple"
     :placeholder="placeholder"
     :options="itemsFlatToLeaf(options)"
-  />
+  >
+    <template v-slot:after-list>
+      <slot name="after-list" />
+    </template>
+    <template v-slot:before-list>
+      <slot name="before-list" />
+    </template>
+  </treeselect>
 </template>
 
 <style lang="scss" scoped>
@@ -153,6 +181,14 @@ watch(selectedValue.value, (val) => {
   :deep(.vue-treeselect__placeholder) {
     @apply text-sm py-2 px-2;
   }
+  :deep(.vue-treeselect__control-arrow-container){
+    svg{
+      display: none
+    }
+    @apply bg-multiselect-caret bg-center bg-no-repeat w-5 h-5 py-px box-content z-10 relative mr-1 opacity-40 shrink-0 grow-0 transition-transform;
+  }
+
+  //bg-multiselect-caret bg-center bg-no-repeat w-5 h-5 py-px box-content z-5 relative mr-1 opacity-40 shrink-0 grow-0 transition-transform
 }
 </style>
 <style lang="scss">
@@ -169,8 +205,14 @@ watch(selectedValue.value, (val) => {
 @tailwind components;
 
 @layer components {
+  .vue-treeselect--open > .vue-treeselect__control .vue-treeselect__control-arrow-container{
+      @apply bg-multiselect-caret bg-center bg-no-repeat w-5 h-5 py-px box-content z-10 relative mr-1 opacity-40 shrink-0 grow-0 transition-transform rotate-180 pointer-events-auto;
+  }
   .vue-treeselect--open > .vue-treeselect__control {
     @apply !rounded ring-1 ring-primary-400 border-primary-400;
+  }
+  .vue-treeselect__is-loading .vue-treeselect__control::after {
+    @apply absolute content-[''] bg-multiselect-spinner bg-center bg-no-repeat w-4 h-4 z-10 right-6 top-3 mr-3.5 animate-spin shrink-0 grow-0;
   }
 }
 </style>

@@ -13,9 +13,15 @@ return new class extends Migration
     {
         Schema::rename('expense_categories', 'categories');
         Schema::table('categories', function (Blueprint $table) {
-            $table->string('type')->nullable();
+            $table->string('type')->default('expense');
             $table->string('image_url')->nullable();
-            $table->integer('parent_id')->nullable();
+            $table->string('complete_name')->nullable();
+            $table->string('parent_path')->nullable();
+            $table->integer('parent_id')->unsigned()->nullable();
+            $table->foreign('parent_id')->references('id')->on('categories')->onDelete('restrict');
+        });
+        Schema::table('categories', function (Blueprint $table) {
+            $table->string('type')->default(null)->change();
         });
     }
 
@@ -29,6 +35,8 @@ return new class extends Migration
                 'type',
                 'image_url',
                 'parent_id',
+                'complete_name',
+                'parent_path',
             ]);
         });
         Schema::rename('categories', 'expense_categories');

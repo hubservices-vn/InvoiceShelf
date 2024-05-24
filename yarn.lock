@@ -171,7 +171,7 @@
   dependencies:
     "@tanstack/vue-virtual" "^3.0.0-beta.60"
 
-"@heroicons/vue@v1":
+"@heroicons/vue@^1.0.6":
   version "1.0.6"
   resolved "https://registry.yarnpkg.com/@heroicons/vue/-/vue-1.0.6.tgz#d8b90734b436eb5a87f40cc300b64a0fb0031f7f"
   integrity sha512-ng2YcCQrdoQWEFpw+ipFl2rZo8mZ56v0T5+MyfQQvNqfKChwgP6DMloZLW+rl17GEcHkE3H82UTAMKBKZr4+WA==
@@ -2027,6 +2027,11 @@ prettier@^3.2.4:
   version "3.2.4"
   resolved "https://registry.npmjs.org/prettier/-/prettier-3.2.4.tgz"
   integrity sha512-FWu1oLHKCrtpO1ypU6J0SbK2d9Ckwysq6bHj/uaCP26DxrPpppCLQRGVuqAxSTvhF00AcvDRyYrLNW7ocBhFFQ==
+
+primevue@^3.52.0:
+  version "3.52.0"
+  resolved "https://registry.yarnpkg.com/primevue/-/primevue-3.52.0.tgz#819d1d70fe37cea7dcd06076b7c3cd9ee4e3c6a4"
+  integrity sha512-HLOVP5YI0ArFKUhIyfZsWmTNMaBYNCBWC/3DYvdd/Po4LY5/WXf7yIYvArE2q/3OuwSXJXvjlR8UNQeJYRSQog==
 
 process@^0.11.1:
   version "0.11.10"
