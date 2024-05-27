@@ -18,7 +18,6 @@ export const useCategoryStore = (useWindow = false) => {
         parent_id: null,
         type: '',
         image_url: '',
-        image_url: '',
         description: '',
       },
       editCategory: null
@@ -70,6 +69,21 @@ export const useCategoryStore = (useWindow = false) => {
                 type: 'success',
                 message: global.t('settings.category.created_message'),
               })
+              resolve(response)
+            })
+            .catch((err) => {
+              handleError(err)
+              reject(err)
+            })
+        })
+      },
+
+      updateCategoryImage(id, data) {
+        console.log(data)
+        return new Promise((resolve, reject) => {
+          axios
+            .post(`/api/v1/categories/${id}/upload-image`, data)
+            .then((response) => {
               resolve(response)
             })
             .catch((err) => {

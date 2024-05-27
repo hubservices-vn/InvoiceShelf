@@ -29,12 +29,14 @@
               @input="v$.currentCategory.name.$touch()"
             />
           </BaseInputGroup>
-          <BaseInputGroup :label="$t('categories.type')" 
-          :error="
+          <BaseInputGroup
+            :label="$t('categories.type')"
+            :error="
               v$.currentCategory.type.$error &&
               v$.currentCategory.type.$errors[0].$message
             "
-            required>
+            required
+          >
             <BaseMultiselect
               v-model="categoryStore.currentCategory.type"
               :options="categoryTypes"
@@ -57,19 +59,16 @@
               v-model="categoryStore.currentCategory.parent_id"
             />
           </BaseInputGroup>
-          <BaseInputGroup
-            :label="$t('categories.image')"
-            :content-loading="isFetchingInitialData"
-          >
+          <BaseInputGroup :label="$t('categories.image')">
             <BaseFileUploader
-              v-model="imgFile"
-              accept="image/*"
+              v-model="categoryImagePreview"
+              base64
               @change="onFileInputChange"
               @remove="onFileInputRemove"
             />
           </BaseInputGroup>
           <BaseInputGroup
-            :label="$t('expenses.description')"
+            :label="$t('categories.description')"
             :error="
               v$.currentCategory.description.$error &&
               v$.currentCategory.description.$errors[0].$message
@@ -128,10 +127,13 @@ import { useI18n } from 'vue-i18n'
 const categoryStore = useCategoryStore()
 const modalStore = useModalStore()
 const { t } = useI18n()
+const isCategoryImageRemoved = ref(false)
+const categoryImagePreview = ref(null)
+const categoryImageBlob = ref(null)
+const categoryImageName = ref(null)
 
 let isSaving = ref(false)
 
-const imgFiles = ref(null)
 const categories = ref([])
 const categoryTypes = [
   { id: 'item', label: 'Item' },
@@ -170,7 +172,10 @@ const v$ = useVuelidate(
 )
 
 const modalActive = computed(() => {
-  categoryStore.currentCategory.type = modalStore.data?.type
+  if (!!modalStore.data?.type) {
+    categoryStore.currentCategory.type = modalStore.data?.type
+  }
+
   return modalStore.active && modalStore.componentName === 'CategoryModal'
 })
 
@@ -187,9 +192,32 @@ async function submitCategoryData() {
 
   isSaving.value = true
 
-  await action(categoryStore.currentCategory)
+  const res = await action(categoryStore.currentCategory)
 
   isSaving.value = false
+
+  if (res.data.data) {
+    if (categoryImageBlob.value || isCategoryImageRemoved.value) {
+      let image = new FormData()
+      image.append(
+        'category_image',
+        JSON.stringify({
+          name: categoryImageName.value,
+          data: categoryImageBlob.value,
+        }),
+      )
+      console.log(
+        JSON.stringify({
+          name: categoryImageName.value,
+          data: categoryImageBlob.value,
+        }),
+      )
+      image.append('is_category_image_removed', isCategoryImageRemoved.value)
+      await categoryStore.updateCategoryImage(res.data.data.id, image)
+      categoryImageBlob.value = null
+      isCategoryImageRemoved.value = false
+    }
+  }
 
   modalStore.refreshData ? modalStore.refreshData() : ''
 
@@ -205,6 +233,17 @@ function closeCategoryModal() {
   }, 300)
 }
 
+function onFileInputChange(fileName, file, fileCount, fileList) {
+  categoryImageName.value = fileList.name
+  categoryImageBlob.value = file
+}
+
+function onFileInputRemove() {
+  categoryImageBlob.value = null
+  categoryImageName.value = null
+  isCategoryImageRemoved.value = true
+}
+
 watch(
   () => categoryStore.currentCategory.type,
   (type) => {
@@ -212,9 +251,20 @@ watch(
       categories.value = []
       return
     }
+    if (modalStore.data) {
+      modalStore.data.type = type
+    }
     categoryStore.fetchCategories({ limit: 'all', type }).then((rs) => {
       categories.value = rs.data?.data || []
     })
+  },
+)
+watch(
+  () => categoryStore.currentCategory.image_url,
+  (image) => {
+    if (image) {
+      categoryImagePreview.value = [{ image }]
+    }
   },
 )
 </script>

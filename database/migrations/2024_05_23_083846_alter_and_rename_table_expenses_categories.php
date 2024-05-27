@@ -14,7 +14,6 @@ return new class extends Migration
         Schema::rename('expense_categories', 'categories');
         Schema::table('categories', function (Blueprint $table) {
             $table->string('type')->default('expense');
-            $table->string('image_url')->nullable();
             $table->string('complete_name')->nullable();
             $table->string('parent_path')->nullable();
             $table->integer('parent_id')->unsigned()->nullable();
@@ -33,7 +32,6 @@ return new class extends Migration
         Schema::table('categories', function (Blueprint $table) {
             $table->dropColumn([
                 'type',
-                'image_url',
                 'parent_id',
                 'complete_name',
                 'parent_path',

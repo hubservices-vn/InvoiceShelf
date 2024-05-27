@@ -39,9 +39,6 @@ class CategoryRequest extends FormRequest
             'parent_path' => [
                 'nullable',
             ],
-            'image_url' => [
-                'nullable',
-            ],
             'description' => [
                 'nullable',
             ],

@@ -115,7 +115,7 @@ function openCategoryModal() {
     title: t('settings.category.add_category'),
     componentName: 'CategoryModal',
     size: 'sm',
-    refreshData: table.value && table.value.refresh,
+    refreshData: this.refreshTable,
   })
 }
 

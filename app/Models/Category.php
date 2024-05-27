@@ -5,12 +5,15 @@ namespace InvoiceShelf\Models;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
 
-class Category extends Model
+class Category extends Model implements HasMedia
 {
     use HasFactory;
-
-    protected $fillable = ['name', 'complete_name', 'company_id', 'type', 'parent_id', 'parent_path', 'image_url', 'description'];
+    use InteractsWithMedia;
+    
+    protected $fillable = ['name', 'complete_name', 'company_id', 'type', 'parent_id', 'parent_path', 'description'];
 
     /**
      * The accessors to append to the model's array form.
@@ -87,6 +90,17 @@ class Category extends Model
     public function getAmountAttribute()
     {
         return $this->expenses()->sum('amount');
+    }
+
+    public function getImageAttribute()
+    {
+        $image = $this->getMedia('category')->first();
+
+        if ($image) {
+            return asset($image->getUrl());
+        }
+
+        return 0;
     }
 
     public function scopeWhereCompany($query)

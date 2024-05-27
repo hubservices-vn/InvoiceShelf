@@ -264,7 +264,10 @@ async function updateCompanyData() {
         )
       }
       logoData.append('is_company_logo_removed', isCompanyLogoRemoved.value)
-
+      console.log(JSON.stringify({
+            name: logoFileName.value,
+            data: logoFileBlob.value,
+          }),)
       await companyStore.updateCompanyLogo(logoData)
       logoFileBlob.value = null
       isCompanyLogoRemoved.value = false

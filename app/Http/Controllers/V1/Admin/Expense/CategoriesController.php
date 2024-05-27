@@ -4,6 +4,7 @@ namespace InvoiceShelf\Http\Controllers\V1\Admin\Expense;
 
 use Illuminate\Http\Request;
 use InvoiceShelf\Http\Controllers\Controller;
+use InvoiceShelf\Http\Requests\CategoryImageRequest;
 use InvoiceShelf\Http\Requests\CategoryRequest;
 use InvoiceShelf\Http\Resources\CategoryResource;
 use InvoiceShelf\Models\Category;
@@ -99,6 +100,29 @@ class CategoriesController extends Controller
             return respondJson('expense_attached', 'Expense Attached');
         }
 
+        return response()->json([
+            'success' => true,
+        ]);
+    }
+
+    /**
+     * Upload the category image to storage.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function uploadCategoryImage(CategoryImageRequest $request, Category $category)
+    {
+        $this->authorize('manage settings');
+
+        $data = json_decode($request->category_image);
+        if (isset($request->is_category_image_removed) && (bool) $request->is_category_image_removed) {
+            $category->clearMediaCollection('category');
+        }
+        if ($data) {
+            $category->addMediaFromBase64($data->data)
+                ->usingFileName($data->name)
+                ->toMediaCollection('category');
+        }
         return response()->json([
             'success' => true,
         ]);

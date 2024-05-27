@@ -4,6 +4,7 @@ namespace InvoiceShelf\Providers;
 
 use Gate;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
+use InvoiceShelf\Policies\CategoryPolicy;
 use InvoiceShelf\Policies\CompanyPolicy;
 use InvoiceShelf\Policies\CustomerPolicy;
 use InvoiceShelf\Policies\DashboardPolicy;

@@ -14,7 +14,7 @@ export const useModalStore = (useWindow = false) => {
       componentName: '',
       id: '',
       size: 'md',
-      data: null,
+      data: {},
       refreshData: null,
       variant: '',
     }),

@@ -302,6 +302,7 @@ Route::prefix('/v1')->group(function () {
 
             Route::apiResource('expenses', ExpensesController::class);
 
+            Route::post('/categories/{category}/upload-image', [CategoriesController::class, 'uploadCategoryImage']);
             Route::apiResource('categories', CategoriesController::class);
 
             // Payments
