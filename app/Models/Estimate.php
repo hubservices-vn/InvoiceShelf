@@ -77,6 +77,11 @@ class Estimate extends Model implements HasMedia
         return $this->hasMany('InvoiceShelf\Models\EstimateItem');
     }
 
+    public function category()
+    {
+        return $this->belongsTo(Category::class, 'category_id');
+    }
+
     public function customer()
     {
         return $this->belongsTo(Customer::class, 'customer_id');
@@ -116,6 +121,11 @@ class Estimate extends Model implements HasMedia
         return Carbon::parse($this->estimate_date)->format($dateFormat);
     }
 
+    public function scopeWhereCategory($query, $category_id)
+    {
+        return $query->Where('categories.id', $category_id);
+    }
+
     public function scopeEstimatesBetween($query, $start, $end)
     {
         return $query->whereBetween(
@@ -143,7 +153,7 @@ class Estimate extends Model implements HasMedia
     {
         foreach (explode(' ', $search) as $term) {
             $query->whereHas('customer', function ($query) use ($term) {
-                $query->where('name', 'LIKE', '%'.$term.'%')
+                $query->where('estimates.name', 'LIKE', '%'.$term.'%')
                     ->orWhere('contact_name', 'LIKE', '%'.$term.'%')
                     ->orWhere('company_name', 'LIKE', '%'.$term.'%');
             });
@@ -160,6 +170,10 @@ class Estimate extends Model implements HasMedia
 
         if ($filters->get('estimate_number')) {
             $query->whereEstimateNumber($filters->get('estimate_number'));
+        }
+         
+        if ($filters->get('category_id')) {
+            $query->whereCategory($filters->get('category_id'));
         }
 
         if ($filters->get('status')) {

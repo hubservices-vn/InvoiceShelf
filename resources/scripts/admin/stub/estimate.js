@@ -15,6 +15,7 @@ export default function () {
     expiry_date: '',
     estimate_number: '',
     customer_id: null,
+    category_id: null,
     sub_total: 0,
     total: 0,
     tax: 0,

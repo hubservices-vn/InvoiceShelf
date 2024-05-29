@@ -20,6 +20,7 @@ class EstimatesController extends Controller
 
         $estimates = Estimate::whereCompany()
             ->join('customers', 'customers.id', '=', 'estimates.customer_id')
+            ->leftJoin('categories', 'categories.id', '=', 'estimates.category_id')
             ->applyFilters($request->all())
             ->select('estimates.*', 'customers.name')
             ->latest()

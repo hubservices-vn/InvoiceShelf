@@ -57,7 +57,18 @@
           label="name"
         />
       </BaseInputGroup>
-
+      <BaseInputGroup :label="$t('categories.label')" class="text-left">
+        <BaseTreeSelect
+              name="parent_id"
+              value-prop="id"
+              label-prop="name"
+              :placeholder="$t('expenses.categories.select_a_category')"
+              parent-prop="parent_id"
+              :options="categories"
+              :loading="categoryLoading"
+              v-model="filters.category_id"
+            />
+      </BaseInputGroup>
       <BaseInputGroup :label="$t('estimates.status')">
         <BaseMultiselect
           v-model="filters.status"
@@ -237,7 +248,7 @@
 </template>
 
 <script setup>
-import { computed, onUnmounted, reactive, ref, watch, inject } from 'vue'
+import { computed, onUnmounted, reactive, ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { useEstimateStore } from '@/scripts/admin/stores/estimate'
@@ -249,7 +260,9 @@ import abilities from '@/scripts/admin/stub/abilities'
 import ObservatoryIcon from '@/scripts/components/icons/empty/ObservatoryIcon.vue'
 import EstimateDropDown from '@/scripts/admin/components/dropdowns/EstimateIndexDropdown.vue'
 import SendEstimateModal from '@/scripts/admin/components/modal-components/SendEstimateModal.vue'
+import { useCategoryStore } from '@/scripts/admin/stores/category'
 
+const categoryStore = useCategoryStore()
 const estimateStore = useEstimateStore()
 const dialogStore = useDialogStore()
 const userStore = useUserStore()
@@ -266,12 +279,25 @@ const status = ref([
   'REJECTED',
 ])
 
+
+const categories = ref([])
+const categoryLoading = ref(false)
+async function fetchCategories(search = undefined) {
+  categoryLoading.value = true
+  const res = await categoryStore.fetchCategories({ search, type: 'estimate' })
+  if (res.data.data.length) {
+    categories.value = res.data?.data || []
+  }
+  categoryLoading.value = false
+}
+
 const isRequestOngoing = ref(true)
 const activeTab = ref('general.draft')
 const router = useRouter()
 
 let filters = reactive({
   customer_id: '',
+  category_id: null,
   status: '',
   from_date: '',
   to_date: '',
@@ -305,6 +331,12 @@ const estimateColumns = computed(() => {
     },
     { key: 'estimate_number', label: t('estimates.number', 2) },
     { key: 'name', label: t('estimates.customer') },
+    {
+      key: 'category.name',
+      label: t('categories.name'),
+      thClass: 'extra',
+      tdClass: 'cursor-pointer font-medium text-primary-500',
+    },
     { key: 'status', label: t('estimates.status') },
     {
       key: 'total',
@@ -355,6 +387,7 @@ function refreshTable() {
 async function fetchData({ page, filter, sort }) {
   let data = {
     customer_id: filters.customer_id,
+    category_id: filters.category_id,
     status: filters.status,
     from_date: filters.from_date,
     to_date: filters.to_date,
@@ -414,6 +447,7 @@ function clearFilter() {
   filters.customer_id = ''
   filters.status = ''
   filters.from_date = ''
+  filters.category_id = null
   filters.to_date = ''
   filters.estimate_number = ''
 
@@ -484,4 +518,7 @@ function setActiveTab(val) {
       break
   }
 }
+onMounted(() => {
+  fetchCategories()
+})
 </script>

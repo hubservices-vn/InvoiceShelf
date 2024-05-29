@@ -1,4 +1,5 @@
 <template>
+  <CategoryModal />
   <div class="md:grid-cols-12 grid-cols-1 md:gap-x-6 mt-6 mb-8 grid gap-y-5">
     <BaseCustomerSelectPopup
       v-model="estimateStore.newEstimate.customer"
@@ -49,7 +50,32 @@
         >
         </BaseInput>
       </BaseInputGroup>
-
+      <BaseInputGroup
+            :label="$t('expenses.category')"
+            :content-loading="isLoading"
+          >
+            <BaseTreeSelect
+              name="parent_id"
+              value-prop="id"
+              label-prop="name"
+              :placeholder="$t('expenses.categories.select_a_category')"
+              parent-prop="parent_id"
+              :options="categories"
+              :content-loading="isLoading"
+              :loading="categoryLoading"
+              v-model="estimateStore.newEstimate.category_id"
+            >
+              <template v-slot:after-list>
+                <BaseSelectAction @click="openCategoryModal">
+                  <BaseIcon
+                    name="PlusIcon"
+                    class="h-4 mr-2 -ml-2 text-center text-primary-400"
+                  />
+                  {{ $t('settings.category.add_new_category') }}
+                </BaseSelectAction>
+              </template>
+            </BaseTreeSelect>
+          </BaseInputGroup>
       <!-- <BaseInputGroup
         :label="$t('estimates.ref_number')"
         :content-loading="isLoading"
@@ -80,9 +106,17 @@
 </template>
 
 <script setup>
+import { ref, onMounted } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useEstimateStore } from '@/scripts/admin/stores/estimate'
 import ExchangeRateConverter from '@/scripts/admin/components/estimate-invoice-common/ExchangeRateConverter.vue'
+import CategoryModal from '@/scripts/admin/components/modal-components/CategoryModal.vue'
+import { useCategoryStore } from '@/scripts/admin/stores/category'
+import { useModalStore } from '@/scripts/stores/modal'
 
+const { t } = useI18n()
+const modalStore = useModalStore()
+const categoryStore = useCategoryStore()
 const props = defineProps({
   v: {
     type: Object,
@@ -99,4 +133,30 @@ const props = defineProps({
 })
 
 const estimateStore = useEstimateStore()
+
+
+function openCategoryModal() {
+  modalStore.openModal({
+    title: t('settings.category.add_category'),
+    componentName: 'CategoryModal',
+    size: 'sm',
+    refreshData: fetchCategories,
+    data: { type: 'estimate' },
+  })
+}
+
+const categories = ref([])
+const categoryLoading = ref(false)
+async function fetchCategories(search = undefined) {
+  categoryLoading.value = true
+  const res = await categoryStore.fetchCategories({ search, type: 'estimate' })
+  if (res.data.data.length) {
+    categories.value = res.data?.data || []
+  }
+  categoryLoading.value = false
+}
+
+onMounted(() => {
+  fetchCategories()
+})
 </script>

@@ -32,6 +32,7 @@ class EstimateResource extends JsonResource
             'tax' => $this->tax,
             'unique_hash' => $this->unique_hash,
             'creator_id' => $this->creator_id,
+            'category_id' => $this->category_id,
             'template_name' => $this->template_name,
             'customer_id' => $this->customer_id,
             'exchange_rate' => $this->exchange_rate,
@@ -48,6 +49,9 @@ class EstimateResource extends JsonResource
             'sales_tax_address_type' => $this->sales_tax_address_type,
             'items' => $this->when($this->items()->exists(), function () {
                 return EstimateItemResource::collection($this->items);
+            }),
+            'category' => $this->when($this->category()->exists(), function () {
+                return new CategoryResource($this->category);
             }),
             'customer' => $this->when($this->customer()->exists(), function () {
                 return new CustomerResource($this->customer);

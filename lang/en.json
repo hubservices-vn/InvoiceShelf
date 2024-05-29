@@ -172,6 +172,7 @@
     "custom": "Custom"
   },
   "categories": {
+    "label": "Category",
     "title": "Categories",
     "prefix": "Prefix",
     "add_category": "Add Category",

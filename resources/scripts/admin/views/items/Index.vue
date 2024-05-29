@@ -46,7 +46,7 @@
           autocomplete="off"
         />
       </BaseInputGroup>
-      <BaseInputGroup :label="$t('customers.phone')" class="text-left">
+      <BaseInputGroup :label="$t('categories.label')" class="text-left">
         <BaseTreeSelect
               name="parent_id"
               value-prop="id"
