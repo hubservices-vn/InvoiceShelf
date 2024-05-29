@@ -80,6 +80,11 @@ class RecurringInvoice extends Model
     {
         return $this->hasMany(Invoice::class);
     }
+    
+    public function category()
+    {
+        return $this->belongsTo(Category::class, 'category_id');
+    }
 
     public function taxes()
     {
@@ -114,6 +119,11 @@ class RecurringInvoice extends Model
     public function scopeWhereCompany($query)
     {
         $query->where('recurring_invoices.company_id', request()->header('company'));
+    }
+
+    public function scopeWhereCategory($query, $category_id)
+    {
+        return $query->Where('categories.id', $category_id);
     }
 
     public function scopePaginateData($query, $limit)
@@ -152,7 +162,7 @@ class RecurringInvoice extends Model
     {
         foreach (explode(' ', $search) as $term) {
             $query->whereHas('customer', function ($query) use ($term) {
-                $query->where('name', 'LIKE', '%'.$term.'%')
+                $query->where('customers.name', 'LIKE', '%'.$term.'%')
                     ->orWhere('contact_name', 'LIKE', '%'.$term.'%')
                     ->orWhere('company_name', 'LIKE', '%'.$term.'%');
             });
@@ -170,6 +180,10 @@ class RecurringInvoice extends Model
         if ($filters->get('search')) {
             $query->whereSearch($filters->get('search'));
         }
+        
+        if ($filters->get('category_id')) {
+            $query->whereCategory($filters->get('category_id'));
+        }
 
         if ($filters->get('from_date') && $filters->get('to_date')) {
             $start = Carbon::createFromFormat('Y-m-d', $filters->get('from_date'));
@@ -182,7 +196,7 @@ class RecurringInvoice extends Model
         }
 
         if ($filters->get('orderByField') || $filters->get('orderBy')) {
-            $field = $filters->get('orderByField') ? $filters->get('orderByField') : 'created_at';
+            $field = $filters->get('orderByField') ? 'recurring_invoices.'.$filters->get('orderByField') : 'recurring_invoices.created_at';
             $orderBy = $filters->get('orderBy') ? $filters->get('orderBy') : 'asc';
             $query->whereOrder($field, $orderBy);
         }

@@ -4,6 +4,7 @@ export default {
   currency: null,
   currency_id: '',
   customer_id: '',
+  category_id: null,
   payment_number: '',
   payment_date: '',
   amount: 0,

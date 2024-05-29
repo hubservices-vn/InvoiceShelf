@@ -17,6 +17,7 @@ export default function () {
     discount_val: 0,
     reference_number: null,
     tax: 0,
+    category_id: null,
     sub_total: 0,
     total: 0,
     tax_per_item: null,

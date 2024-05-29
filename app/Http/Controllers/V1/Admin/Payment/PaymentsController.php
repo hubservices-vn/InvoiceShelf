@@ -26,6 +26,7 @@ class PaymentsController extends Controller
             ->join('customers', 'customers.id', '=', 'payments.customer_id')
             ->leftJoin('invoices', 'invoices.id', '=', 'payments.invoice_id')
             ->leftJoin('payment_methods', 'payment_methods.id', '=', 'payments.payment_method_id')
+            ->leftJoin('categories', 'categories.id', '=', 'payments.category_id')
             ->applyFilters($request->all())
             ->select('payments.*', 'customers.name', 'invoices.invoice_number', 'payment_methods.name as payment_mode')
             ->latest()

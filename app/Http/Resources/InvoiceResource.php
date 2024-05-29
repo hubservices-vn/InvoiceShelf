@@ -37,6 +37,7 @@ class InvoiceResource extends JsonResource
             'unique_hash' => $this->unique_hash,
             'template_name' => $this->template_name,
             'customer_id' => $this->customer_id,
+            'category_id' => $this->category_id,
             'recurring_invoice_id' => $this->recurring_invoice_id,
             'sequence_number' => $this->sequence_number,
             'exchange_rate' => $this->exchange_rate,
@@ -58,6 +59,9 @@ class InvoiceResource extends JsonResource
             'overdue' => $this->overdue,
             'items' => $this->when($this->items()->exists(), function () {
                 return InvoiceItemResource::collection($this->items);
+            }),
+            'category' => $this->when($this->category()->exists(), function () {
+                return new CategoryResource($this->category);
             }),
             'customer' => $this->when($this->customer()->exists(), function () {
                 return new CustomerResource($this->customer);

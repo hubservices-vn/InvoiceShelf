@@ -39,7 +39,7 @@
           >
             <BaseMultiselect
               v-model="categoryStore.currentCategory.type"
-              :options="categoryTypes"
+              :options="categoryStore.categoryItems"
               value-prop="id"
               :disabled="!!modalStore.data?.type"
               searchable
@@ -135,13 +135,6 @@ const categoryImageName = ref(null)
 let isSaving = ref(false)
 
 const categories = ref([])
-const categoryTypes = [
-  { id: 'item', label: 'Item' },
-  { id: 'invoice', label: 'Invoice' },
-  { id: 'expense', label: 'Expense' },
-  { id: 'estimate', label: 'Estimate' },
-  { id: 'customer', label: 'Customer' },
-]
 
 const rules = computed(() => {
   return {

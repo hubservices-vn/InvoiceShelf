@@ -49,7 +49,18 @@
           label="name"
         />
       </BaseInputGroup>
-
+      <BaseInputGroup :label="$t('categories.label')" class="text-left">
+        <BaseTreeSelect
+              name="parent_id"
+              value-prop="id"
+              label-prop="name"
+              :placeholder="$t('categories.select_a_category')"
+              parent-prop="parent_id"
+              :options="categories"
+              :loading="categoryLoading"
+              v-model="filters.category_id"
+            />
+      </BaseInputGroup>
       <BaseInputGroup :label="$t('payments.payment_number')">
         <BaseInput v-model="filters.payment_number">
           <template #left="slotProps">
@@ -202,7 +213,7 @@
 <script setup>
 import { debouncedWatch } from '@vueuse/core'
 
-import { ref, reactive, computed, onUnmounted } from 'vue'
+import { ref, reactive, computed, onUnmounted, onMounted } from 'vue'
 
 import { useI18n } from 'vue-i18n'
 import { useDialogStore } from '@/scripts/stores/dialog'
@@ -213,18 +224,31 @@ import abilities from '@/scripts/admin/stub/abilities'
 import CapsuleIcon from '@/scripts/components/icons/empty/CapsuleIcon.vue'
 import PaymentDropdown from '@/scripts/admin/components/dropdowns/PaymentIndexDropdown.vue'
 import SendPaymentModal from '@/scripts/admin/components/modal-components/SendPaymentModal.vue'
+import { useCategoryStore } from '@/scripts/admin/stores/category'
 
+const categoryStore = useCategoryStore()
 const { t } = useI18n()
 let showFilters = ref(false)
 let isFetchingInitialData = ref(true)
 let tableComponent = ref(null)
 
 const filters = reactive({
-  customer: '',
+  customer_id: '',
   payment_mode: '',
+  category_id: null,
   payment_number: '',
 })
 
+const categories = ref([])
+const categoryLoading = ref(false)
+async function fetchCategories(search = undefined) {
+  categoryLoading.value = true
+  const res = await categoryStore.fetchCategories({ search, type: 'payment' })
+  if (res.data.data.length) {
+    categories.value = res.data?.data || []
+  }
+  categoryLoading.value = false
+}
 const paymentStore = usePaymentStore()
 const companyStore = useCompanyStore()
 const dialogStore = useDialogStore()
@@ -250,6 +274,12 @@ const paymentColumns = computed(() => {
     },
     { key: 'payment_number', label: t('payments.payment_number') },
     { key: 'name', label: t('payments.customer') },
+    {
+      key: 'category.name',
+      label: t('categories.label'),
+      thClass: 'extra',
+      tdClass: 'cursor-pointer font-medium text-primary-500',
+    },
     { key: 'payment_mode', label: t('payments.payment_mode') },
     { key: 'invoice_number', label: t('invoices.invoice_number') },
     { key: 'amount', label: t('payments.amount') },
@@ -309,6 +339,7 @@ function hasAtleastOneAbility() {
 async function fetchData({ page, filter, sort }) {
   let data = {
     customer_id: filters.customer_id,
+    category_id: filters.category_id,
     payment_method_id:
       filters.payment_mode !== null ? filters.payment_mode : '',
     payment_number: filters.payment_number,
@@ -346,6 +377,7 @@ function clearFilter() {
   filters.customer_id = ''
   filters.payment_mode = ''
   filters.payment_number = ''
+  filters.category_id = null
 }
 
 function toggleFilter() {
@@ -377,4 +409,8 @@ function removeMultiplePayments() {
       }
     })
 }
+
+onMounted(() => {
+  fetchCategories()
+})
 </script>

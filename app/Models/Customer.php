@@ -347,8 +347,8 @@ class Customer extends Authenticatable implements HasMedia
         }
 
         if ($filters->get('orderByField') || $filters->get('orderBy')) {
-            $field = $filters->get('orderByField') ? $filters->get('orderByField') : 'name';
-            $orderBy = $filters->get('orderBy') ? $filters->get('orderBy') : 'asc';
+            $field = $filters->get('orderByField') ? 'customers.'.$filters->get('orderByField') : 'customers.name';
+            $orderBy = $filters->get('orderBy') ? 'customers.'.$filters->get('orderBy') : 'asc';
             $query->whereOrder($field, $orderBy);
         }
     }

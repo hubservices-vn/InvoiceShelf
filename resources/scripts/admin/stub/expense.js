@@ -9,6 +9,7 @@ export default {
   customer_id: '',
   currency_id: '',
   payment_method_id: '',
+  category_id: null,
   receiptFiles: [],
   customFields: [],
   fields: [],

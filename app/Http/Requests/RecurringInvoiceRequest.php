@@ -42,6 +42,9 @@ class RecurringInvoiceRequest extends FormRequest
             'exchange_rate' => [
                 'nullable',
             ],
+            'category_id' => [
+                'nullable',
+            ],
             'discount' => [
                 'numeric',
                 'required',

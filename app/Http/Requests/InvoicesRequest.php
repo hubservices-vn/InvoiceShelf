@@ -34,6 +34,9 @@ class InvoicesRequest extends FormRequest
             'due_date' => [
                 'nullable',
             ],
+            'category_id' => [
+                'nullable',
+            ],
             'customer_id' => [
                 'required',
             ],

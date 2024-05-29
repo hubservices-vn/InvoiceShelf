@@ -333,7 +333,7 @@ const estimateColumns = computed(() => {
     { key: 'name', label: t('estimates.customer') },
     {
       key: 'category.name',
-      label: t('categories.name'),
+      label: t('categories.label'),
       thClass: 'extra',
       tdClass: 'cursor-pointer font-medium text-primary-500',
     },

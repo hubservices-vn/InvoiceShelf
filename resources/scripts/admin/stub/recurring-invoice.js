@@ -6,7 +6,7 @@ export default function () {
   return {
     currency: null,
     customer: null,
-
+    category_id: null,
     customer_id: null,
     invoice_template_id: 1,
     sub_total: 0,

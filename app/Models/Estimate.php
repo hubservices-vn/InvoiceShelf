@@ -153,7 +153,7 @@ class Estimate extends Model implements HasMedia
     {
         foreach (explode(' ', $search) as $term) {
             $query->whereHas('customer', function ($query) use ($term) {
-                $query->where('estimates.name', 'LIKE', '%'.$term.'%')
+                $query->where('customers.name', 'LIKE', '%'.$term.'%')
                     ->orWhere('contact_name', 'LIKE', '%'.$term.'%')
                     ->orWhere('company_name', 'LIKE', '%'.$term.'%');
             });
@@ -195,7 +195,7 @@ class Estimate extends Model implements HasMedia
         }
 
         if ($filters->get('orderByField') || $filters->get('orderBy')) {
-            $field = $filters->get('orderByField') ? $filters->get('orderByField') : 'sequence_number';
+            $field = $filters->get('orderByField') ? 'estimates.'.$filters->get('orderByField') : 'estimates.sequence_number';
             $orderBy = $filters->get('orderBy') ? $filters->get('orderBy') : 'desc';
             $query->whereOrder($field, $orderBy);
         }

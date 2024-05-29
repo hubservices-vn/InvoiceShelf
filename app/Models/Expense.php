@@ -126,8 +126,8 @@ class Expense extends Model implements HasMedia
     {
         foreach (explode(' ', $search) as $term) {
             $query->whereHas('category', function ($query) use ($term) {
-                $query->where('name', 'LIKE', '%'.$term.'%');
-                $query->where('type', '=', 'expense');
+                $query->where('categories.name', 'LIKE', '%'.$term.'%');
+                $query->where('categories.type', '=', 'expense');
             });
         }
     }
@@ -172,7 +172,7 @@ class Expense extends Model implements HasMedia
         }
 
         if ($filters->get('orderByField') || $filters->get('orderBy')) {
-            $field = $filters->get('orderByField') ? $filters->get('orderByField') : 'expense_date';
+            $field = $filters->get('orderByField') ? 'expenses.'.$filters->get('orderByField') : 'expenses.expense_date';
             $orderBy = $filters->get('orderBy') ? $filters->get('orderBy') : 'asc';
             $query->whereOrder($field, $orderBy);
         }

@@ -25,6 +25,7 @@ class InvoicesController extends Controller
 
         $invoices = Invoice::whereCompany()
             ->join('customers', 'customers.id', '=', 'invoices.customer_id')
+            ->leftJoin('categories', 'categories.id', '=', 'invoices.category_id')
             ->applyFilters($request->all())
             ->select('invoices.*', 'customers.name')
             ->latest()

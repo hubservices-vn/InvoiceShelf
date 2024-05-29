@@ -70,7 +70,7 @@ const CategoryColumns = computed(() => {
       tdClass: 'font-medium text-gray-900',
     },
     {
-      key: 'type',
+      key: 'typeName',
       label: t('settings.category.category_type'),
       thClass: 'extra',
       tdClass: 'font-medium text-gray-900',
@@ -99,6 +99,8 @@ async function fetchData({ page, filter, sort }) {
   }
 
   let response = await categoryStore.fetchCategories(data)
+  response.data.data?.map(item => item.typeName = categoryStore.categoryTypes[item.type])
+
   return {
     data: response.data.data,
     pagination: {

@@ -51,14 +51,14 @@
         </BaseInput>
       </BaseInputGroup>
       <BaseInputGroup
-            :label="$t('expenses.category')"
+            :label="$t('categories.label')"
             :content-loading="isLoading"
           >
             <BaseTreeSelect
               name="parent_id"
               value-prop="id"
               label-prop="name"
-              :placeholder="$t('expenses.categories.select_a_category')"
+              :placeholder="$t('categories.select_a_category')"
               parent-prop="parent_id"
               :options="categories"
               :content-loading="isLoading"

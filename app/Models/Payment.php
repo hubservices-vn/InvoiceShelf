@@ -89,6 +89,11 @@ class Payment extends Model implements HasMedia
         return $this->belongsTo(Transaction::class);
     }
 
+    public function category()
+    {
+        return $this->belongsTo(Category::class, 'category_id');
+    }
+
     public function emailLogs()
     {
         return $this->morphMany('App\Models\EmailLog', 'mailable');
@@ -267,11 +272,16 @@ class Payment extends Model implements HasMedia
         return true;
     }
 
+    public function scopeWhereCategory($query, $category_id)
+    {
+        return $query->Where('categories.id', $category_id);
+    }
+
     public function scopeWhereSearch($query, $search)
     {
         foreach (explode(' ', $search) as $term) {
             $query->whereHas('customer', function ($query) use ($term) {
-                $query->where('name', 'LIKE', '%'.$term.'%')
+                $query->where('customers.name', 'LIKE', '%'.$term.'%')
                     ->orWhere('contact_name', 'LIKE', '%'.$term.'%')
                     ->orWhere('company_name', 'LIKE', '%'.$term.'%');
             });
@@ -313,6 +323,10 @@ class Payment extends Model implements HasMedia
             $query->wherePayment($filters->get('payment_id'));
         }
 
+        if ($filters->get('category_id')) {
+            $query->whereCategory($filters->get('category_id'));
+        }
+
         if ($filters->get('payment_method_id')) {
             $query->paymentMethod($filters->get('payment_method_id'));
         }
@@ -328,7 +342,7 @@ class Payment extends Model implements HasMedia
         }
 
         if ($filters->get('orderByField') || $filters->get('orderBy')) {
-            $field = $filters->get('orderByField') ? $filters->get('orderByField') : 'sequence_number';
+            $field = $filters->get('orderByField') ? 'payments.'.$filters->get('orderByField') : 'payments.sequence_number';
             $orderBy = $filters->get('orderBy') ? $filters->get('orderBy') : 'desc';
             $query->whereOrder($field, $orderBy);
         }

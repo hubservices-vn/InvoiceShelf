@@ -22,6 +22,7 @@ class RecurringInvoiceController extends Controller
         $limit = $request->has('limit') ? $request->limit : 10;
 
         $recurringInvoices = RecurringInvoice::whereCompany()
+            ->leftJoin('categories', 'categories.id', '=', 'recurring_invoices.category_id')
             ->applyFilters($request->all())
             ->paginateData($limit);
 

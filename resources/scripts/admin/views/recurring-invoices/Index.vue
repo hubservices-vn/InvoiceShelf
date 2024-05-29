@@ -53,7 +53,18 @@
           label="name"
         />
       </BaseInputGroup>
-
+      <BaseInputGroup :label="$t('categories.label')" class="text-left">
+        <BaseTreeSelect
+          name="parent_id"
+          value-prop="id"
+          label-prop="name"
+          :placeholder="$t('categories.select_a_category')"
+          parent-prop="parent_id"
+          :options="categories"
+          :loading="categoryLoading"
+          v-model="filters.category_id"
+        />
+      </BaseInputGroup>
       <BaseInputGroup :label="$t('recurring_invoices.status')">
         <BaseMultiselect
           v-model="filters.status"
@@ -112,16 +123,7 @@
 
     <div v-show="!showEmptyScreen" class="relative table-container">
       <div
-        class="
-          relative
-          flex
-          items-center
-          justify-between
-          h-10
-          mt-5
-          list-none
-          border-b-2 border-gray-200 border-solid
-        "
+        class="relative flex items-center justify-between h-10 mt-5 list-none border-b-2 border-gray-200 border-solid"
       >
         <!-- Tabs -->
         <BaseTabGroup
@@ -140,14 +142,7 @@
         >
           <template #activator>
             <span
-              class="
-                flex
-                text-sm
-                font-medium
-                cursor-pointer
-                select-none
-                text-primary-400
-              "
+              class="flex text-sm font-medium cursor-pointer select-none text-primary-400"
             >
               {{ $t('general.actions') }}
               <BaseIcon name="ChevronDownIcon" class="h-5" />
@@ -252,7 +247,7 @@
 </template>
 
 <script setup>
-import { computed, onUnmounted, reactive, ref, watch, inject } from 'vue'
+import { computed, onUnmounted, reactive, ref, onMounted  } from 'vue'
 import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { useCustomerStore } from '@/scripts/admin/stores/customer'
@@ -266,7 +261,9 @@ import SendInvoiceModal from '@/scripts/admin/components/modal-components/SendIn
 import RecurringInvoiceIndexDropdown from '@/scripts/admin/components/dropdowns/RecurringInvoiceIndexDropdown.vue'
 import MoonwalkerIcon from '@/scripts/components/icons/empty/MoonwalkerIcon.vue'
 import abilities from '@/scripts/admin/stub/abilities'
+import { useCategoryStore } from '@/scripts/admin/stores/category'
 
+const categoryStore = useCategoryStore()
 const recurringInvoiceStore = useRecurringInvoiceStore()
 const customerStore = useCustomerStore()
 const dialogStore = useDialogStore()
@@ -281,15 +278,28 @@ const isRequestOngoing = ref(true)
 const activeTab = ref('recurring-invoices.all')
 const router = useRouter()
 
+const categories = ref([])
+const categoryLoading = ref(false)
+async function fetchCategories(search = undefined) {
+  categoryLoading.value = true
+  const res = await categoryStore.fetchCategories({ search, type: 'recurringInvoice' })
+  if (res.data.data.length) {
+    categories.value = res.data?.data || []
+  }
+  categoryLoading.value = false
+}
+
 let filters = reactive({
   customer_id: '',
+  category_id: null,
   status: '',
   from_date: '',
   to_date: '',
 })
 
 const showEmptyScreen = computed(
-  () => !recurringInvoiceStore.totalRecurringInvoices && !isRequestOngoing.value
+  () =>
+    !recurringInvoiceStore.totalRecurringInvoices && !isRequestOngoing.value,
 )
 
 const selectField = computed({
@@ -313,6 +323,12 @@ const invoiceColumns = computed(() => {
       tdClass: 'font-medium',
     },
     { key: 'customer', label: t('invoices.customer') },
+    {
+      key: 'category.name',
+      label: t('categories.label'),
+      thClass: 'extra',
+      tdClass: 'cursor-pointer font-medium text-primary-500',
+    },
     { key: 'frequency', label: t('recurring_invoices.frequency.title') },
     { key: 'status', label: t('invoices.status') },
     { key: 'total', label: t('invoices.total') },
@@ -331,7 +347,7 @@ debouncedWatch(
   () => {
     setFilters()
   },
-  { debounce: 500 }
+  { debounce: 500 },
 )
 
 onUnmounted(() => {
@@ -364,9 +380,14 @@ function refreshTable() {
   table.value && table.value.refresh()
 }
 
+onMounted(() => {
+  fetchCategories()
+})
+
 async function fetchData({ page, filter, sort }) {
   let data = {
     customer_id: filters.customer_id,
+    category_id: filters.category_id,
     status: filters.status,
     from_date: filters.from_date,
     to_date: filters.to_date,
@@ -423,6 +444,7 @@ function setFilters() {
 
 function clearFilter() {
   filters.customer_id = ''
+  filters.category_id = null
   filters.status = ''
   filters.from_date = ''
   filters.to_date = ''

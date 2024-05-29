@@ -1,6 +1,6 @@
 <template>
   <PaymentModeModal />
-
+  <CategoryModal />
   <BasePage class="relative payment-create">
     <form action="" @submit.prevent="submitPaymentData">
       <BasePageHeader :title="pageTitle" class="mb-5">
@@ -71,7 +71,32 @@
               :content-loading="isLoadingContent"
             />
           </BaseInputGroup>
-
+          <BaseInputGroup
+            :label="$t('categories.label')"
+            :content-loading="isFetchingInitialData"
+          >
+            <BaseTreeSelect
+              name="parent_id"
+              value-prop="id"
+              label-prop="name"
+              :placeholder="$t('categories.select_a_category')"
+              parent-prop="parent_id"
+              :options="categories"
+              :content-loading="isLoadingContent"
+              :loading="categoryLoading"
+              v-model="paymentStore.currentPayment.category_id"
+            >
+              <template v-slot:after-list>
+                <BaseSelectAction @click="openCategoryModal">
+                  <BaseIcon
+                    name="PlusIcon"
+                    class="h-4 mr-2 -ml-2 text-center text-primary-400"
+                  />
+                  {{ $t('settings.category.add_new_category') }}
+                </BaseSelectAction>
+              </template>
+            </BaseTreeSelect>
+          </BaseInputGroup>
           <BaseInputGroup
             :label="$t('payments.customer')"
             :error="
@@ -260,6 +285,7 @@ import {
   inject,
   watchEffect,
   onBeforeUnmount,
+  onMounted
 } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
@@ -285,7 +311,10 @@ import { useGlobalStore } from '@/scripts/admin/stores/global'
 import SelectNotePopup from '@/scripts/admin/components/SelectNotePopup.vue'
 import PaymentCustomFields from '@/scripts/admin/components/custom-fields/CreateCustomFields.vue'
 import PaymentModeModal from '@/scripts/admin/components/modal-components/PaymentModeModal.vue'
+import CategoryModal from '@/scripts/admin/components/modal-components/CategoryModal.vue'
+import { useCategoryStore } from '@/scripts/admin/stores/category'
 
+const categoryStore = useCategoryStore()
 const route = useRoute()
 const router = useRouter()
 
@@ -315,6 +344,31 @@ const PaymentFields = reactive([
   'payment',
   'paymentCustom',
 ])
+
+function openCategoryModal() {
+  modalStore.openModal({
+    title: t('settings.category.add_category'),
+    componentName: 'CategoryModal',
+    size: 'sm',
+    refreshData: fetchCategories,
+    data: { type: 'payment' },
+  })
+}
+
+const categories = ref([])
+const categoryLoading = ref(false)
+async function fetchCategories(search = undefined) {
+  categoryLoading.value = true
+  const res = await categoryStore.fetchCategories({ search, type: 'payment' })
+  if (res.data.data.length) {
+    categories.value = res.data?.data || []
+  }
+  categoryLoading.value = false
+}
+
+onMounted(() => {
+  fetchCategories()
+})
 
 const amount = computed({
   get: () => paymentStore.currentPayment.amount / 100,

@@ -1,4 +1,5 @@
 <template>
+  <CategoryModal />
   <div class="grid grid-cols-12 gap-8 mt-6 mb-8">
     <BaseCustomerSelectPopup
       v-model="invoiceStore.newInvoice.customer"
@@ -47,7 +48,32 @@
           @input="v.invoice_number.$touch()"
         />
       </BaseInputGroup>
-
+      <BaseInputGroup
+            :label="$t('categories.label')"
+            :content-loading="isLoading"
+          >
+            <BaseTreeSelect
+              name="parent_id"
+              value-prop="id"
+              label-prop="name"
+              :placeholder="$t('categories.select_a_category')"
+              parent-prop="parent_id"
+              :options="categories"
+              :content-loading="isLoading"
+              :loading="categoryLoading"
+              v-model="invoiceStore.newInvoice.category_id"
+            >
+              <template v-slot:after-list>
+                <BaseSelectAction @click="openCategoryModal">
+                  <BaseIcon
+                    name="PlusIcon"
+                    class="h-4 mr-2 -ml-2 text-center text-primary-400"
+                  />
+                  {{ $t('settings.category.add_new_category') }}
+                </BaseSelectAction>
+              </template>
+            </BaseTreeSelect>
+          </BaseInputGroup>
       <ExchangeRateConverter
         :store="invoiceStore"
         store-prop="newInvoice"
@@ -61,9 +87,17 @@
 </template>
 
 <script setup>
+import { computed, ref, onMounted } from 'vue'
 import ExchangeRateConverter from '@/scripts/admin/components/estimate-invoice-common/ExchangeRateConverter.vue'
 import { useInvoiceStore } from '@/scripts/admin/stores/invoice'
+import CategoryModal from '@/scripts/admin/components/modal-components/CategoryModal.vue'
+import { useCategoryStore } from '@/scripts/admin/stores/category'
+import { useModalStore } from '@/scripts/stores/modal'
+import { useI18n } from 'vue-i18n'
 
+const { t } = useI18n()
+const modalStore = useModalStore()
+const categoryStore = useCategoryStore()
 const props = defineProps({
   v: {
     type: Object,
@@ -80,4 +114,28 @@ const props = defineProps({
 })
 
 const invoiceStore = useInvoiceStore()
+
+function openCategoryModal() {
+  modalStore.openModal({
+    title: t('settings.category.add_category'),
+    componentName: 'CategoryModal',
+    size: 'sm',
+    refreshData: fetchCategories,
+    data: { type: 'invoice' },
+  })
+}
+
+const categories = ref([])
+const categoryLoading = ref(false)
+async function fetchCategories(search = undefined) {
+  categoryLoading.value = true
+  const res = await categoryStore.fetchCategories({ search, type: 'invoice' })
+  if (res.data.data.length) {
+    categories.value = res.data?.data || []
+  }
+  categoryLoading.value = false
+}
+onMounted(() => {
+  fetchCategories()
+})
 </script>

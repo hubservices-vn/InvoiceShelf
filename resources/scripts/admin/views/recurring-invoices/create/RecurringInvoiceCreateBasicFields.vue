@@ -1,5 +1,6 @@
 <template>
   <div class="col-span-5 pr-0">
+    <CategoryModal />
     <BaseCustomerSelectPopup
       v-model="recurringInvoiceStore.newRecurringInvoice.customer"
       :valid="v.customer_id"
@@ -30,13 +31,7 @@
   </div>
 
   <div
-    class="
-      grid grid-cols-1
-      col-span-7
-      gap-4
-      mt-8
-      lg:gap-6 lg:mt-0 lg:grid-cols-2
-    "
+    class="grid grid-cols-1 col-span-7 gap-4 mt-8 lg:gap-6 lg:mt-0 lg:grid-cols-2"
   >
     <BaseInputGroup
       :label="$t('recurring_invoices.starts_at')"
@@ -169,6 +164,33 @@
       />
     </BaseInputGroup>
 
+    <BaseInputGroup
+      :label="$t('categories.label')"
+      :content-loading="isLoading"
+    >
+      <BaseTreeSelect
+        name="parent_id"
+        value-prop="id"
+        label-prop="name"
+        :placeholder="$t('categories.select_a_category')"
+        parent-prop="parent_id"
+        :options="categories"
+        :content-loading="isLoading"
+        :loading="categoryLoading"
+        v-model="recurringInvoiceStore.newRecurringInvoice.category_id"
+      >
+        <template v-slot:after-list>
+          <BaseSelectAction @click="openCategoryModal">
+            <BaseIcon
+              name="PlusIcon"
+              class="h-4 mr-2 -ml-2 text-center text-primary-400"
+            />
+            {{ $t('settings.category.add_new_category') }}
+          </BaseSelectAction>
+        </template>
+      </BaseTreeSelect>
+    </BaseInputGroup>
+
     <ExchangeRateConverter
       :store="recurringInvoiceStore"
       store-prop="newRecurringInvoice"
@@ -186,9 +208,15 @@ import { useDebounceFn } from '@vueuse/core'
 import { useRecurringInvoiceStore } from '@/scripts/admin/stores/recurring-invoice'
 import { computed, onMounted, reactive, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
-
+import { useModalStore } from '@/scripts/stores/modal'
 import ExchangeRateConverter from '@/scripts/admin/components/estimate-invoice-common/ExchangeRateConverter.vue'
+import CategoryModal from '@/scripts/admin/components/modal-components/CategoryModal.vue'
+import { useCategoryStore } from '@/scripts/admin/stores/category'
+import { useI18n } from 'vue-i18n'
 
+const { t } = useI18n()
+const categoryStore = useCategoryStore()
+const modalStore = useModalStore()
 const props = defineProps({
   v: {
     type: Object,
@@ -216,6 +244,27 @@ const limits = reactive([
   { label: 'Count', value: 'COUNT' },
 ])
 
+function openCategoryModal() {
+  modalStore.openModal({
+    title: t('settings.category.add_category'),
+    componentName: 'CategoryModal',
+    size: 'sm',
+    refreshData: fetchCategories,
+    data: { type: 'recurringInvoice' },
+  })
+}
+
+const categories = ref([])
+const categoryLoading = ref(false)
+async function fetchCategories(search = undefined) {
+  categoryLoading.value = true
+  const res = await categoryStore.fetchCategories({ search, type: 'recurringInvoice' })
+  if (res.data.data.length) {
+    categories.value = res.data?.data || []
+  }
+  categoryLoading.value = false
+}
+
 const isCustomFrequency = computed(() => {
   return (
     recurringInvoiceStore.newRecurringInvoice.selectedFrequency &&
@@ -241,11 +290,12 @@ watch(
         recurringInvoiceStore.newRecurringInvoice.frequency = null
       }
     }
-  }
+  },
 )
 
 onMounted(() => {
   // on create
+  fetchCategories()
   if (!route.params.id) {
     getNextInvoiceDate()
   }

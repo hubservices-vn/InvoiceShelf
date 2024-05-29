@@ -20,11 +20,24 @@ export const useCategoryStore = (useWindow = false) => {
         image_url: '',
         description: '',
       },
-      editCategory: null
+      editCategory: null,
+      categoryTypes: {
+        item: 'Item',
+        invoice: 'Invoice',
+        expense: 'Expense',
+        estimate: 'Estimate',
+        customer: 'Customer',
+        payment: 'Payment',
+        recurringInvoice: 'Recurring Invoice',
+      },
     }),
 
     getters: {
       isEdit: (state) => (state.currentCategory.id ? true : false),
+      categoryItems: (state) =>
+        Object.keys(state.categoryTypes).reduce((arrs, key) => {
+          return [...arrs, { id: key, label: state.categoryTypes[key] }]
+        }, []),
     },
 
     actions: {
@@ -100,15 +113,13 @@ export const useCategoryStore = (useWindow = false) => {
             .then((response) => {
               if (response.data) {
                 let pos = this.categories.findIndex(
-                  (category) => category.id === response.data.data.id
+                  (category) => category.id === response.data.data.id,
                 )
                 this.categories[pos] = data.categories
                 const notificationStore = useNotificationStore()
                 notificationStore.showNotification({
                   type: 'success',
-                  message: global.t(
-                    'settings.category.updated_message'
-                  ),
+                  message: global.t('settings.category.updated_message'),
                 })
               }
               resolve(response)
@@ -126,7 +137,7 @@ export const useCategoryStore = (useWindow = false) => {
             .delete(`/api/v1/categories/${id}`)
             .then((response) => {
               let index = this.categories.findIndex(
-                (category) => category.id === id
+                (category) => category.id === id,
               )
               this.categories.splice(index, 1)
               const notificationStore = useNotificationStore()

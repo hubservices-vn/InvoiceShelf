@@ -51,7 +51,18 @@
           label="name"
         />
       </BaseInputGroup>
-
+      <BaseInputGroup :label="$t('categories.label')" class="text-left">
+        <BaseTreeSelect
+              name="parent_id"
+              value-prop="id"
+              label-prop="name"
+              :placeholder="$t('categories.select_a_category')"
+              parent-prop="parent_id"
+              :options="categories"
+              :loading="categoryLoading"
+              v-model="filters.category_id"
+            />
+      </BaseInputGroup>
       <BaseInputGroup :label="$t('invoices.status')">
         <BaseMultiselect
           v-model="filters.status"
@@ -264,7 +275,7 @@
 </template>
 
 <script setup>
-import { computed, onUnmounted, reactive, ref, watch, inject } from 'vue'
+import { computed, onUnmounted, reactive, ref, watch, inject, onMounted  } from 'vue'
 import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { useInvoiceStore } from '@/scripts/admin/stores/invoice'
@@ -277,6 +288,9 @@ import { debouncedWatch } from '@vueuse/core'
 import MoonwalkerIcon from '@/scripts/components/icons/empty/MoonwalkerIcon.vue'
 import InvoiceDropdown from '@/scripts/admin/components/dropdowns/InvoiceIndexDropdown.vue'
 import SendInvoiceModal from '@/scripts/admin/components/modal-components/SendInvoiceModal.vue'
+import { useCategoryStore } from '@/scripts/admin/stores/category'
+
+const categoryStore = useCategoryStore()
 // Stores
 const invoiceStore = useInvoiceStore()
 const dialogStore = useDialogStore()
@@ -307,11 +321,23 @@ const userStore = useUserStore()
 
 let filters = reactive({
   customer_id: '',
+  category_id: null,
   status: '',
   from_date: '',
   to_date: '',
   invoice_number: '',
 })
+
+const categories = ref([])
+const categoryLoading = ref(false)
+async function fetchCategories(search = undefined) {
+  categoryLoading.value = true
+  const res = await categoryStore.fetchCategories({ search, type: 'invoice' })
+  if (res.data.data.length) {
+    categories.value = res.data?.data || []
+  }
+  categoryLoading.value = false
+}
 
 const showEmptyScreen = computed(
   () => !invoiceStore.invoiceTotalCount && !isRequestOngoing.value
@@ -341,6 +367,12 @@ const invoiceColumns = computed(() => {
     },
     { key: 'invoice_number', label: t('invoices.number') },
     { key: 'name', label: t('invoices.customer') },
+    {
+      key: 'category.name',
+      label: t('categories.label'),
+      thClass: 'extra',
+      tdClass: 'cursor-pointer font-medium text-primary-500',
+    },
     { key: 'status', label: t('invoices.status') },
     {
       key: 'due_amount',
@@ -397,6 +429,7 @@ function refreshTable() {
 async function fetchData({ page, filter, sort }) {
   let data = {
     customer_id: filters.customer_id,
+    category_id: filters.category_id,
     status: filters.status,
     from_date: filters.from_date,
     to_date: filters.to_date,
@@ -459,6 +492,7 @@ function setFilters() {
 
 function clearFilter() {
   filters.customer_id = ''
+  filters.category_id = ''
   filters.status = ''
   filters.from_date = ''
   filters.to_date = ''
@@ -540,4 +574,8 @@ function setActiveTab(val) {
       break
   }
 }
+
+onMounted(() => {
+  fetchCategories()
+})
 </script>

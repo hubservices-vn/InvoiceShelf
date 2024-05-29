@@ -83,6 +83,11 @@ class Invoice extends Model implements HasMedia
         return $this->hasMany('InvoiceShelf\Models\InvoiceItem');
     }
 
+    public function category()
+    {
+        return $this->belongsTo(Category::class, 'category_id');
+    }
+
     public function taxes()
     {
         return $this->hasMany(Tax::class);
@@ -193,6 +198,11 @@ class Invoice extends Model implements HasMedia
         return Carbon::parse($this->invoice_date)->format($dateFormat);
     }
 
+    public function scopeWhereCategory($query, $category_id)
+    {
+        return $query->Where('categories.id', $category_id);
+    }
+
     public function scopeWhereStatus($query, $status)
     {
         return $query->where('invoices.status', $status);
@@ -228,7 +238,7 @@ class Invoice extends Model implements HasMedia
     {
         foreach (explode(' ', $search) as $term) {
             $query->whereHas('customer', function ($query) use ($term) {
-                $query->where('name', 'LIKE', '%'.$term.'%')
+                $query->where('customers.name', 'LIKE', '%'.$term.'%')
                     ->orWhere('contact_name', 'LIKE', '%'.$term.'%')
                     ->orWhere('company_name', 'LIKE', '%'.$term.'%');
             });
@@ -246,6 +256,10 @@ class Invoice extends Model implements HasMedia
 
         if ($filters->get('search')) {
             $query->whereSearch($filters->get('search'));
+        }
+
+        if ($filters->get('category_id')) {
+            $query->whereCategory($filters->get('category_id'));
         }
 
         if ($filters->get('status')) {
@@ -285,7 +299,7 @@ class Invoice extends Model implements HasMedia
         }
 
         if ($filters->get('orderByField') || $filters->get('orderBy')) {
-            $field = $filters->get('orderByField') ? $filters->get('orderByField') : 'sequence_number';
+            $field = $filters->get('orderByField') ? 'invoices.'.$filters->get('orderByField') : 'invoices.sequence_number';
             $orderBy = $filters->get('orderBy') ? $filters->get('orderBy') : 'desc';
             $query->whereOrder($field, $orderBy);
         }

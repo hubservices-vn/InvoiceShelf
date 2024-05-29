@@ -29,6 +29,7 @@ class PaymentResource extends JsonResource
             'exchange_rate' => $this->exchange_rate,
             'base_amount' => $this->base_amount,
             'currency_id' => $this->currency_id,
+            'category_id' => $this->category_id,
             'transaction_id' => $this->transaction_id,
             'sequence_number' => $this->sequence_number,
             'formatted_created_at' => $this->formattedCreatedAt,
@@ -36,6 +37,9 @@ class PaymentResource extends JsonResource
             'payment_pdf_url' => $this->paymentPdfUrl,
             'customer' => $this->when($this->customer()->exists(), function () {
                 return new CustomerResource($this->customer);
+            }),
+            'category' => $this->when($this->category()->exists(), function () {
+                return new CategoryResource($this->category);
             }),
             'invoice' => $this->when($this->invoice()->exists(), function () {
                 return new InvoiceResource($this->invoice);

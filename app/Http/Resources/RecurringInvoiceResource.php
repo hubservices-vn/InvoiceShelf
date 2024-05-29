@@ -25,6 +25,7 @@ class RecurringInvoiceResource extends JsonResource
             'customer_id' => $this->customer_id,
             'company_id' => $this->company_id,
             'creator_id' => $this->creator_id,
+            'category_id' => $this->category_id,
             'status' => $this->status,
             'next_invoice_at' => $this->next_invoice_at,
             'frequency' => $this->frequency,
@@ -47,6 +48,9 @@ class RecurringInvoiceResource extends JsonResource
             'sales_tax_address_type' => $this->sales_tax_address_type,
             'fields' => $this->when($this->fields()->exists(), function () {
                 return CustomFieldValueResource::collection($this->fields);
+            }),
+            'category' => $this->when($this->category()->exists(), function () {
+                return new CategoryResource($this->category);
             }),
             'items' => $this->when($this->items()->exists(), function () {
                 return InvoiceItemResource::collection($this->items);

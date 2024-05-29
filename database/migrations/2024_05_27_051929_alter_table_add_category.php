@@ -12,27 +12,27 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('items', function (Blueprint $table) {
-            $table->integer('category_id')->unsigned();
+            $table->integer('category_id')->nullable()->unsigned();
             $table->foreign('category_id')->references('id')->on('categories')->onDelete('cascade');
         });
         Schema::table('customers', function (Blueprint $table) {
-            $table->integer('category_id')->unsigned();
+            $table->integer('category_id')->nullable()->unsigned();
             $table->foreign('category_id')->references('id')->on('categories')->onDelete('cascade');
         });
         Schema::table('estimates', function (Blueprint $table) {
-            $table->integer('category_id')->unsigned();
+            $table->integer('category_id')->nullable()->unsigned();
             $table->foreign('category_id')->references('id')->on('categories')->onDelete('cascade');
         });
         Schema::table('invoices', function (Blueprint $table) {
-            $table->integer('category_id')->unsigned();
+            $table->integer('category_id')->nullable()->unsigned();
             $table->foreign('category_id')->references('id')->on('categories')->onDelete('cascade');
         });
         Schema::table('payments', function (Blueprint $table) {
-            $table->integer('category_id')->unsigned();
+            $table->integer('category_id')->nullable()->unsigned();
             $table->foreign('category_id')->references('id')->on('categories')->onDelete('cascade');
         });
         Schema::table('recurring_invoices', function (Blueprint $table) {
-            $table->integer('category_id')->unsigned();
+            $table->integer('category_id')->nullable()->unsigned();
             $table->foreign('category_id')->references('id')->on('categories')->onDelete('cascade');
         });
     }

@@ -33,6 +33,9 @@ class PaymentRequest extends FormRequest
             'customer_id' => [
                 'required',
             ],
+            'category_id' => [
+                'nullable',
+            ],
             'exchange_rate' => [
                 'nullable',
             ],

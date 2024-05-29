@@ -275,7 +275,7 @@ const itemColumns = computed(() => {
     },
     {
       key: 'category.name',
-      label: t('categories.name'),
+      label: t('categories.label'),
       thClass: 'extra',
       tdClass: 'cursor-pointer font-medium text-primary-500',
     },
