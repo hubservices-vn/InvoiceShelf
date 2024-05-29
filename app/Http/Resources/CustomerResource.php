@@ -24,6 +24,7 @@ class CustomerResource extends JsonResource
             'website' => $this->website,
             'enable_portal' => $this->enable_portal,
             'password_added' => $this->password ? true : false,
+            'category_id' => $this->category_id,
             'currency_id' => $this->currency_id,
             'company_id' => $this->company_id,
             'facebook_id' => $this->facebook_id,
@@ -36,6 +37,9 @@ class CustomerResource extends JsonResource
             'due_amount' => $this->due_amount,
             'base_due_amount' => $this->base_due_amount,
             'prefix' => $this->prefix,
+            'category' => $this->when($this->category()->exists(), function () {
+                return new CategoryResource($this->category);
+            }),
             'billing' => $this->when($this->billingAddress()->exists(), function () {
                 return new AddressResource($this->billingAddress);
             }),

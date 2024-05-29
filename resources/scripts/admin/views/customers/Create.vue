@@ -1,5 +1,6 @@
 <template>
   <BasePage>
+    <CategoryModal />
     <form @submit.prevent="submitCustomerData">
       <BasePageHeader :title="pageTitle">
         <BaseBreadcrumb>
@@ -56,7 +57,32 @@
                 @input="v$.currentCustomer.name.$touch()"
               />
             </BaseInputGroup>
-
+            <BaseInputGroup
+            :label="$t('expenses.category')"
+            :content-loading="isFetchingInitialData"
+          >
+            <BaseTreeSelect
+              name="parent_id"
+              value-prop="id"
+              label-prop="name"
+              :placeholder="$t('expenses.categories.select_a_category')"
+              parent-prop="parent_id"
+              :options="categories"
+              :content-loading="isFetchingInitialData"
+              :loading="categoryLoading"
+              v-model="customerStore.currentCustomer.category_id"
+            >
+              <template v-slot:after-list>
+                <BaseSelectAction @click="openCategoryModal">
+                  <BaseIcon
+                    name="PlusIcon"
+                    class="h-4 mr-2 -ml-2 text-center text-primary-400"
+                  />
+                  {{ $t('settings.category.add_new_category') }}
+                </BaseSelectAction>
+              </template>
+            </BaseTreeSelect>
+          </BaseInputGroup>
             <BaseInputGroup
               :label="$t('customers.primary_contact_name')"
               :content-loading="isFetchingInitialData"
@@ -601,11 +627,16 @@ import CustomerCustomFields from '@/scripts/admin/components/custom-fields/Creat
 import { useGlobalStore } from '@/scripts/admin/stores/global'
 import CopyInputField from '@/scripts/admin/components/CopyInputField.vue'
 import { useCompanyStore } from '@/scripts/admin/stores/company'
+import CategoryModal from '@/scripts/admin/components/modal-components/CategoryModal.vue'
+import { useModalStore } from '@/scripts/stores/modal'
+import { useCategoryStore } from '@/scripts/admin/stores/category'
 
+const categoryStore = useCategoryStore()
 const customerStore = useCustomerStore()
 const customFieldStore = useCustomFieldStore()
 const globalStore = useGlobalStore()
 const companyStore = useCompanyStore()
+const modalStore = useModalStore()
 
 const customFieldValidationScope = 'customFields'
 
@@ -618,7 +649,6 @@ let isFetchingInitialData = ref(false)
 let isShowPassword = ref(false)
 let isShowConfirmPassword = ref(false)
 
-let active = ref(false)
 const isSaving = ref(false)
 
 const isEdit = computed(() => route.name === 'customers.edit')
@@ -628,6 +658,27 @@ let isLoadingContent = computed(() => customerStore.isFetchingInitialSettings)
 const pageTitle = computed(() =>
   isEdit.value ? t('customers.edit_customer') : t('customers.new_customer')
 )
+
+function openCategoryModal() {
+  modalStore.openModal({
+    title: t('settings.category.add_category'),
+    componentName: 'CategoryModal',
+    size: 'sm',
+    refreshData: fetchCategories,
+    data: { type: 'customer' },
+  })
+}
+
+const categories = ref([])
+const categoryLoading = ref(false)
+async function fetchCategories(search = undefined) {
+  categoryLoading.value = true
+  const res = await categoryStore.fetchCategories({ search, type: 'customer' })
+  if (res.data.data.length) {
+    categories.value = res.data?.data || []
+  }
+  categoryLoading.value = false
+}
 
 const rules = computed(() => {
   return {
@@ -753,4 +804,8 @@ async function submitCustomerData() {
 
   router.push(`/admin/customers/${response.data.data.id}/view`)
 }
+
+onMounted(() => {
+  fetchCategories()
+})
 </script>

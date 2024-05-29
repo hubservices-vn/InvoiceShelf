@@ -43,6 +43,18 @@
     </BasePageHeader>
 
     <BaseFilterWrapper :show="showFilters" class="mt-5" @clear="clearFilter">
+      <BaseInputGroup :label="$t('customers.phone')" class="text-left">
+        <BaseTreeSelect
+              name="parent_id"
+              value-prop="id"
+              label-prop="name"
+              :placeholder="$t('expenses.categories.select_a_category')"
+              parent-prop="parent_id"
+              :options="categories"
+              :loading="categoryLoading"
+              v-model="filters.category_id"
+            />
+      </BaseInputGroup>
       <BaseInputGroup :label="$t('customers.display_name')" class="text-left">
         <BaseInput
           v-model="filters.display_name"
@@ -197,7 +209,7 @@
 <script setup>
 import { debouncedWatch } from '@vueuse/core'
 import moment from 'moment'
-import { reactive, ref, inject, computed, onUnmounted } from 'vue'
+import { reactive, ref, inject, computed, onUnmounted, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useCustomerStore } from '@/scripts/admin/stores/customer'
 import { useDialogStore } from '@/scripts/stores/dialog'
@@ -208,7 +220,9 @@ import abilities from '@/scripts/admin/stub/abilities'
 
 import CustomerDropdown from '@/scripts/admin/components/dropdowns/CustomerIndexDropdown.vue'
 import AstronautIcon from '@/scripts/components/icons/empty/AstronautIcon.vue'
+import { useCategoryStore } from '@/scripts/admin/stores/category'
 
+const categoryStore = useCategoryStore()
 const companyStore = useCompanyStore()
 const dialogStore = useDialogStore()
 const customerStore = useCustomerStore()
@@ -219,9 +233,21 @@ let showFilters = ref(false)
 let isFetchingInitialData = ref(true)
 const { t } = useI18n()
 
+const categories = ref([])
+const categoryLoading = ref(false)
+async function fetchCategories(search = undefined) {
+  categoryLoading.value = true
+  const res = await categoryStore.fetchCategories({ search, type: 'customer' })
+  if (res.data.data.length) {
+    categories.value = res.data?.data || []
+  }
+  categoryLoading.value = false
+}
+
 let filters = reactive({
   display_name: '',
   contact_name: '',
+  category_id: null,
   phone: '',
 })
 
@@ -257,6 +283,12 @@ const customerColumns = computed(() => {
       thClass: 'extra',
       tdClass: 'font-medium text-gray-900',
     },
+    {
+      key: 'category.name',
+      label: 'Category',
+      thClass: 'extra',
+      tdClass: 'cursor-pointer font-medium text-primary-500',
+    },
     { key: 'phone', label: t('customers.phone') },
     { key: 'due_amount', label: t('customers.amount_due') },
     {
@@ -286,6 +318,10 @@ onUnmounted(() => {
   }
 })
 
+onMounted(() => {
+  fetchCategories()
+})
+
 function refreshTable() {
   tableComponent.value.refresh()
 }
@@ -307,6 +343,7 @@ async function fetchData({ page, filter, sort }) {
     display_name: filters.display_name,
     contact_name: filters.contact_name,
     phone: filters.phone,
+    category_id: filters.category_id,
     orderByField: sort.fieldName || 'created_at',
     orderBy: sort.order || 'desc',
     page,
@@ -330,6 +367,7 @@ function clearFilter() {
   filters.display_name = ''
   filters.contact_name = ''
   filters.phone = ''
+  filters.category_id = null
 }
 
 function toggleFilter() {

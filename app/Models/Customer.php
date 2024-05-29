@@ -58,6 +58,11 @@ class Customer extends Authenticatable implements HasMedia
         }
     }
 
+    public function category()
+    {
+        return $this->belongsTo(Category::class, 'category_id');
+    }
+
     public function estimates()
     {
         return $this->hasMany(Estimate::class);
@@ -258,7 +263,7 @@ class Customer extends Authenticatable implements HasMedia
 
     public function scopeWhereDisplayName($query, $displayName)
     {
-        return $query->where('name', 'LIKE', '%'.$displayName.'%');
+        return $query->where('customers.name', 'LIKE', '%'.$displayName.'%');
     }
 
     public function scopeWhereOrder($query, $orderByField, $orderBy)
@@ -270,7 +275,7 @@ class Customer extends Authenticatable implements HasMedia
     {
         foreach (explode(' ', $search) as $term) {
             $query->where(function ($query) use ($term) {
-                $query->where('name', 'LIKE', '%'.$term.'%')
+                $query->where('customers.name', 'LIKE', '%'.$term.'%')
                     ->orWhere('email', 'LIKE', '%'.$term.'%')
                     ->orWhere('phone', 'LIKE', '%'.$term.'%');
             });
@@ -285,6 +290,11 @@ class Customer extends Authenticatable implements HasMedia
     public function scopeWhereCustomer($query, $customer_id)
     {
         $query->orWhere('customers.id', $customer_id);
+    }
+
+    public function scopeWhereCategory($query, $category_id)
+    {
+        return $query->Where('categories.id', $category_id);
     }
 
     public function scopeApplyInvoiceFilters($query, array $filters)
@@ -326,6 +336,10 @@ class Customer extends Authenticatable implements HasMedia
 
         if ($filters->get('customer_id')) {
             $query->whereCustomer($filters->get('customer_id'));
+        }
+
+        if ($filters->get('category_id')) {
+            $query->whereCategory($filters->get('category_id'));
         }
 
         if ($filters->get('phone')) {

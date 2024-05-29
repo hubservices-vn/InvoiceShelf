@@ -60,6 +60,9 @@ class CustomerRequest extends FormRequest
             'currency_id' => [
                 'nullable',
             ],
+            'category_id' => [
+                'nullable',
+            ],
             'billing.name' => [
                 'nullable',
             ],
@@ -134,6 +137,7 @@ class CustomerRequest extends FormRequest
                 'name',
                 'email',
                 'currency_id',
+                'category_id',
                 'password',
                 'phone',
                 'prefix',

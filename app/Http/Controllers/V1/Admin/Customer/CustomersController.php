@@ -33,6 +33,7 @@ class CustomersController extends Controller
             )
             ->groupBy('customers.id')
             ->leftJoin('invoices', 'customers.id', '=', 'invoices.customer_id')
+            ->leftJoin('categories', 'categories.id', '=', 'customers.category_id')
             ->paginateData($limit);
 
         return CustomerResource::collection($customers)

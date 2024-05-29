@@ -75,6 +75,11 @@ class Category extends Model implements HasMedia
         return $this->hasMany(Expense::class, "expense_category_id");
     }
 
+    public function customers()
+    {
+        return $this->hasMany(Customer::class, "category_id");
+    }
+
     public function company()
     {
         return $this->belongsTo(Company::class);
