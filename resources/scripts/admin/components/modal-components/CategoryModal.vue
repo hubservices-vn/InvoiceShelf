@@ -128,7 +128,7 @@ const categoryStore = useCategoryStore()
 const modalStore = useModalStore()
 const { t } = useI18n()
 const isCategoryImageRemoved = ref(false)
-const categoryImagePreview = ref(null)
+const categoryImagePreview = ref([])
 const categoryImageBlob = ref(null)
 const categoryImageName = ref(null)
 
@@ -168,7 +168,12 @@ const modalActive = computed(() => {
   if (!!modalStore.data?.type) {
     categoryStore.currentCategory.type = modalStore.data?.type
   }
-
+  if (!modalStore.active) {
+    categoryImagePreview.value = []
+    categoryImageBlob.value = null
+    categoryImageName.value = null
+    isCategoryImageRemoved.value = false
+  }
   return modalStore.active && modalStore.componentName === 'CategoryModal'
 })
 
