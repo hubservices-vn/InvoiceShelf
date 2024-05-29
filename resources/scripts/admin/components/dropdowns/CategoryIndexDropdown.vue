@@ -13,7 +13,7 @@
     <!-- edit category  -->
     <BaseDropdownItem
       v-if="userStore.hasAbilities(abilities.EDIT_EXPENSE)"
-      @click="editCategory(row.id)"
+      @click="editCategory(row)"
     >
       <BaseIcon
         name="PencilIcon"
@@ -73,12 +73,13 @@ const modalStore = useModalStore()
 const $utils = inject('utils')
 
 function editCategory(data) {
-  categoryStore.fetchCategory(data)
+  categoryStore.fetchCategory(data.id)
   modalStore.openModal({
     title: t('settings.category.edit_category'),
     componentName: 'CategoryModal',
     refreshData: props.loadData,
     size: 'sm',
+    data: {type: data.type}
   })
 }
 

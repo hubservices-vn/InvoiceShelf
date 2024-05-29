@@ -113,6 +113,7 @@ async function fetchData({ page, filter, sort }) {
 }
 
 function openCategoryModal() {
+  console.log({ type: 'invoice'})
   modalStore.openModal({
     title: t('settings.category.add_category'),
     componentName: 'CategoryModal',
