@@ -27,6 +27,8 @@ export const useItemStore = (useWindow = false) => {
         category_id: null,
         unit: null,
         taxes: [],
+        customFields: [],
+        fields: [],
         tax_per_item: false,
       },
     }),

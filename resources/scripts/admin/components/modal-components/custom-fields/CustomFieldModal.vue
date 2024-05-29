@@ -229,6 +229,7 @@ const { t } = useI18n()
 let isSaving = ref(false)
 
 const modelTypes = reactive([
+  'Item',
   'Customer',
   'Invoice',
   'Estimate',

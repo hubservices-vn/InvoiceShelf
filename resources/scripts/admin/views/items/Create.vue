@@ -133,7 +133,17 @@
               @input="v$.currentItem.description.$touch()"
             />
           </BaseInputGroup>
-
+          <div>
+            <CustomerCustomFields
+              type="Item"
+              grid-layout="one-column"
+              :store="itemStore"
+              store-prop="currentItem"
+              :is-edit="isEdit"
+              :is-loading="isFetchingInitialData"
+              :custom-field-scope="customFieldValidationScope"
+            />
+          </div>
           <div>
             <BaseButton
               :content-loading="isFetchingInitialData"
@@ -179,7 +189,10 @@ import { useUserStore } from '@/scripts/admin/stores/user'
 import abilities from '@/scripts/admin/stub/abilities'
 import CategoryModal from '@/scripts/admin/components/modal-components/CategoryModal.vue'
 import { useCategoryStore } from '@/scripts/admin/stores/category'
+import { useCustomFieldStore } from '@/scripts/admin/stores/custom-field'
+import CustomerCustomFields from '@/scripts/admin/components/custom-fields/CreateCustomFields.vue'
 
+const customFieldStore = useCustomFieldStore()
 const categoryStore = useCategoryStore()
 const itemStore = useItemStore()
 const taxTypeStore = useTaxTypeStore()
@@ -192,6 +205,7 @@ const userStore = useUserStore()
 
 const isSaving = ref(false)
 const taxPerItem = ref(companyStore.selectedCompanySettings.tax_per_item)
+const customFieldValidationScope = 'customFields'
 
 let isFetchingInitialData = ref(false)
 
@@ -245,7 +259,7 @@ const taxes = computed({
 const isEdit = computed(() => route.name === 'items.edit')
 
 const pageTitle = computed(() =>
-  isEdit.value ? t('items.edit_item') : t('items.new_item')
+  isEdit.value ? t('items.edit_item') : t('items.new_item'),
 )
 
 const getTaxTypes = computed(() => {
@@ -267,21 +281,23 @@ const rules = computed(() => {
         required: helpers.withMessage(t('validation.required'), required),
         minLength: helpers.withMessage(
           t('validation.name_min_length', { count: 2 }),
-          minLength(2)
+          minLength(2),
         ),
       },
 
       description: {
         maxLength: helpers.withMessage(
           t('validation.description_maxlength'),
-          maxLength(65000)
+          maxLength(65000),
         ),
       },
     },
   }
 })
 
-const v$ = useVuelidate(rules, itemStore)
+const v$ = useVuelidate(rules, itemStore, {
+  $scope: customFieldValidationScope,
+})
 
 async function addItemUnit() {
   modalStore.openModal({
@@ -311,9 +327,9 @@ async function loadData() {
 }
 
 async function submitItem() {
-  v$.value.currentItem.$touch()
+  v$.value.$touch()
 
-  if (v$.value.currentItem.$invalid) {
+  if (v$.value.$invalid) {
     return false
   }
 

@@ -6,10 +6,12 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
+use InvoiceShelf\Traits\HasCustomFieldsTrait;
 
 class Item extends Model
 {
     use HasFactory;
+    use HasCustomFieldsTrait;
 
     protected $guarded = ['id'];
 
@@ -154,6 +156,11 @@ class Item extends Model
         $data['currency_id'] = $company_currency;
         $item = self::create($data);
 
+        $customFields = $request->customFields;
+
+        if ($customFields) {
+            $item->addCustomFields($customFields);
+        }
         if ($request->has('taxes')) {
             foreach ($request->taxes as $tax) {
                 $item->tax_per_item = true;
@@ -182,7 +189,12 @@ class Item extends Model
                 $this->taxes()->create($tax);
             }
         }
+        $customFields = $request->customFields;
 
+        if ($customFields) {
+            $this->updateCustomFields($customFields);
+        }
+        
         return Item::with('taxes')->find($this->id);
     }
 }

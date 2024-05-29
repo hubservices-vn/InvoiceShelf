@@ -28,6 +28,9 @@ class ItemResource extends JsonResource
             'updated_at' => $this->updated_at,
             'tax_per_item' => $this->tax_per_item,
             'formatted_created_at' => $this->formattedCreatedAt,
+            'fields' => $this->when($this->fields()->exists(), function () {
+                return CustomFieldValueResource::collection($this->fields);
+            }),
             'unit' => $this->when($this->unit()->exists(), function () {
                 return new UnitResource($this->unit);
             }),
