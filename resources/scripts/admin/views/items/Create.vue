@@ -9,7 +9,7 @@
     </BasePageHeader>
 
     <ItemUnitModal />
-
+    <CategoryModal />
     <form
       class="grid lg:grid-cols-2 mt-6"
       action="submit"
@@ -33,7 +33,32 @@
               @input="v$.currentItem.name.$touch()"
             />
           </BaseInputGroup>
-
+          <BaseInputGroup
+            :label="$t('expenses.category')"
+            :content-loading="isFetchingInitialData"
+          >
+            <BaseTreeSelect
+              name="parent_id"
+              value-prop="id"
+              label-prop="name"
+              :placeholder="$t('expenses.categories.select_a_category')"
+              parent-prop="parent_id"
+              :options="categories"
+              :content-loading="isFetchingInitialData"
+              :loading="categoryLoading"
+              v-model="itemStore.currentItem.category_id"
+            >
+              <template v-slot:after-list>
+                <BaseSelectAction @click="openCategoryModal">
+                  <BaseIcon
+                    name="PlusIcon"
+                    class="h-4 mr-2 -ml-2 text-center text-primary-400"
+                  />
+                  {{ $t('settings.category.add_new_category') }}
+                </BaseSelectAction>
+              </template>
+            </BaseTreeSelect>
+          </BaseInputGroup>
           <BaseInputGroup
             :label="$t('items.price')"
             :content-loading="isFetchingInitialData"
@@ -133,7 +158,7 @@
 </template>
 
 <script setup>
-import { computed, ref } from 'vue'
+import { computed, ref, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import {
@@ -152,7 +177,10 @@ import { useModalStore } from '@/scripts/stores/modal'
 import ItemUnitModal from '@/scripts/admin/components/modal-components/ItemUnitModal.vue'
 import { useUserStore } from '@/scripts/admin/stores/user'
 import abilities from '@/scripts/admin/stub/abilities'
+import CategoryModal from '@/scripts/admin/components/modal-components/CategoryModal.vue'
+import { useCategoryStore } from '@/scripts/admin/stores/category'
 
+const categoryStore = useCategoryStore()
 const itemStore = useItemStore()
 const taxTypeStore = useTaxTypeStore()
 const modalStore = useModalStore()
@@ -169,6 +197,27 @@ let isFetchingInitialData = ref(false)
 
 itemStore.$reset()
 loadData()
+
+function openCategoryModal() {
+  modalStore.openModal({
+    title: t('settings.category.add_category'),
+    componentName: 'CategoryModal',
+    size: 'sm',
+    refreshData: fetchCategories,
+    data: { type: 'item' },
+  })
+}
+
+const categories = ref([])
+const categoryLoading = ref(false)
+async function fetchCategories(search = undefined) {
+  categoryLoading.value = true
+  const res = await categoryStore.fetchCategories({ search, type: 'item' })
+  if (res.data.data.length) {
+    categories.value = res.data?.data || []
+  }
+  categoryLoading.value = false
+}
 
 const price = computed({
   get: () => itemStore.currentItem.price / 100,
@@ -307,4 +356,7 @@ async function submitItem() {
     }, 300)
   }
 }
+onMounted(() => {
+  fetchCategories()
+})
 </script>

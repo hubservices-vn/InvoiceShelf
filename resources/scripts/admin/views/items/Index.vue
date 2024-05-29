@@ -46,7 +46,18 @@
           autocomplete="off"
         />
       </BaseInputGroup>
-
+      <BaseInputGroup :label="$t('customers.phone')" class="text-left">
+        <BaseTreeSelect
+              name="parent_id"
+              value-prop="id"
+              label-prop="name"
+              :placeholder="$t('expenses.categories.select_a_category')"
+              parent-prop="parent_id"
+              :options="categories"
+              :loading="categoryLoading"
+              v-model="filters.category_id"
+            />
+      </BaseInputGroup>
       <BaseInputGroup :label="$t('items.unit')" class="text-left">
         <BaseMultiselect
           v-model="filters.unit_id"
@@ -200,7 +211,9 @@ import { useUserStore } from '@/scripts/admin/stores/user'
 import ItemDropdown from '@/scripts/admin/components/dropdowns/ItemIndexDropdown.vue'
 import SatelliteIcon from '@/scripts/components/icons/empty/SatelliteIcon.vue'
 import abilities from '@/scripts/admin/stub/abilities'
+import { useCategoryStore } from '@/scripts/admin/stores/category'
 
+const categoryStore = useCategoryStore()
 const utils = inject('utils')
 
 const itemStore = useItemStore()
@@ -213,9 +226,22 @@ const { t } = useI18n()
 let showFilters = ref(false)
 let isFetchingInitialData = ref(true)
 
+
+const categories = ref([])
+const categoryLoading = ref(false)
+async function fetchCategories(search = undefined) {
+  categoryLoading.value = true
+  const res = await categoryStore.fetchCategories({ search, type: 'item' })
+  if (res.data.data.length) {
+    categories.value = res.data?.data || []
+  }
+  categoryLoading.value = false
+}
+
 const filters = reactive({
   name: '',
   unit_id: '',
+  category_id: null,
   price: '',
 })
 
@@ -246,6 +272,12 @@ const itemColumns = computed(() => {
       label: t('items.name'),
       thClass: 'extra',
       tdClass: 'font-medium text-gray-900',
+    },
+    {
+      key: 'category.name',
+      label: t('categories.name'),
+      thClass: 'extra',
+      tdClass: 'cursor-pointer font-medium text-primary-500',
     },
     { key: 'unit_name', label: t('items.unit') },
     { key: 'price', label: t('items.price') },
@@ -279,6 +311,7 @@ onUnmounted(() => {
 function clearFilter() {
   filters.name = ''
   filters.unit_id = ''
+  filters.category_id = null
   filters.price = ''
 }
 
@@ -312,6 +345,7 @@ async function fetchData({ page, filter, sort }) {
   let data = {
     search: filters.name,
     unit_id: filters.unit_id !== null ? filters.unit_id : '',
+    category_id: filters.category_id,
     price: Math.round(filters.price * 100),
     orderByField: sort.fieldName || 'created_at',
     orderBy: sort.order || 'desc',
@@ -356,4 +390,8 @@ function removeMultipleItems() {
       }
     })
 }
+
+onMounted(() => {
+  fetchCategories()
+})
 </script>

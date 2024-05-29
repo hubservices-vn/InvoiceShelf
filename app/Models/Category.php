@@ -80,6 +80,31 @@ class Category extends Model implements HasMedia
         return $this->hasMany(Customer::class, "category_id");
     }
 
+    public function items()
+    {
+        return $this->hasMany(Item::class, "category_id");
+    }
+
+    public function invoices()
+    {
+        return $this->hasMany(Invoice::class, "category_id");
+    }
+
+    public function payments()
+    {
+        return $this->hasMany(Payment::class, "category_id");
+    }
+
+    public function estimates()
+    {
+        return $this->hasMany(Estimate::class, "category_id");
+    }
+
+    public function recurringInvoices()
+    {
+        return $this->hasMany(RecurringInvoice::class, "category_id");
+    }
+
     public function company()
     {
         return $this->belongsTo(Company::class);

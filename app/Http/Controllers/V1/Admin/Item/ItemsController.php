@@ -25,6 +25,7 @@ class ItemsController extends Controller
 
         $items = Item::whereCompany()
             ->leftJoin('units', 'units.id', '=', 'items.unit_id')
+            ->leftJoin('categories', 'categories.id', '=', 'items.category_id')
             ->applyFilters($request->all())
             ->select('items.*', 'units.name as unit_name')
             ->latest()

@@ -31,6 +31,11 @@ class Item extends Model
         return $this->belongsTo(Company::class);
     }
 
+    public function category()
+    {
+        return $this->belongsTo(Category::class, 'category_id');
+    }
+
     public function creator()
     {
         return $this->belongsTo('InvoiceShelf\Models\User', 'creator_id');
@@ -66,6 +71,11 @@ class Item extends Model
         $query->orWhere('id', $item_id);
     }
 
+    public function scopeWhereCategory($query, $category_id)
+    {
+        return $query->Where('categories.id', $category_id);
+    }
+
     public function scopeApplyFilters($query, array $filters)
     {
         $filters = collect($filters);
@@ -77,6 +87,10 @@ class Item extends Model
         if ($filters->get('price')) {
             $query->wherePrice($filters->get('price'));
         }
+        
+        if ($filters->get('category_id')) {
+            $query->whereCategory($filters->get('category_id'));
+        }
 
         if ($filters->get('unit_id')) {
             $query->whereUnit($filters->get('unit_id'));
@@ -87,7 +101,7 @@ class Item extends Model
         }
 
         if ($filters->get('orderByField') || $filters->get('orderBy')) {
-            $field = $filters->get('orderByField') ? $filters->get('orderByField') : 'name';
+            $field = $filters->get('orderByField') ? $filters->get('orderByField') : 'items.name';
             $orderBy = $filters->get('orderBy') ? $filters->get('orderBy') : 'asc';
             $query->whereOrder($field, $orderBy);
         }
