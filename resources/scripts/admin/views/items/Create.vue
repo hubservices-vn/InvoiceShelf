@@ -137,6 +137,7 @@
             <BaseFileUploader
               v-model="itemImagePreview"
               base64
+              :content-loading="isFetchingInitialData"
               @change="onFileInputChange"
               @remove="onFileInputRemove"
             />
@@ -381,7 +382,9 @@ async function submitItem() {
 
     const res = await action(data)
     if (res.data.data && (itemImageBlob.value || isImageRemoved.value)) {
-        let image = new FormData()
+      let image = new FormData()
+
+      if (itemImageBlob.value) {
         image.append(
           'item_image',
           JSON.stringify({
@@ -389,10 +392,15 @@ async function submitItem() {
             data: itemImageBlob.value,
           }),
         )
+      }
+      if (isImageRemoved.value) {
         image.append('is_item_image_removed', isImageRemoved.value)
-        await itemStore.updateItemImage(res.data.data.id, image)
-        itemImageBlob.value = null
-        isImageRemoved.value = false
+      }
+
+      await itemStore.updateItemImage(res.data.data.id, image)
+
+      itemImageBlob.value = null
+      isImageRemoved.value = false
     }
 
     isSaving.value = false

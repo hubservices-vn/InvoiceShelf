@@ -194,9 +194,13 @@ async function submitCategoryData() {
 
   isSaving.value = false
 
-  if (res.data.data) {
-    if (categoryImageBlob.value || isCategoryImageRemoved.value) {
-      let image = new FormData()
+  if (
+    res.data.data &&
+    (categoryImageBlob.value || isCategoryImageRemoved.value)
+  ) {
+    let image = new FormData()
+
+    if (categoryImageBlob.value) {
       image.append(
         'category_image',
         JSON.stringify({
@@ -204,11 +208,13 @@ async function submitCategoryData() {
           data: categoryImageBlob.value,
         }),
       )
-      image.append('is_category_image_removed', isCategoryImageRemoved.value)
-      await categoryStore.updateCategoryImage(res.data.data.id, image)
-      categoryImageBlob.value = null
-      isCategoryImageRemoved.value = false
     }
+    if (isCategoryImageRemoved.value) {
+      image.append('is_category_image_removed', isCategoryImageRemoved.value)
+    }
+    await categoryStore.updateCategoryImage(res.data.data.id, image)
+    categoryImageBlob.value = null
+    isCategoryImageRemoved.value = false
   }
 
   modalStore.refreshData ? modalStore.refreshData() : ''
