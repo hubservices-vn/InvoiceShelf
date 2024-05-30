@@ -133,7 +133,7 @@
               @input="v$.currentItem.description.$touch()"
             />
           </BaseInputGroup>
-          <BaseInputGroup :label="$t('categories.image')">
+          <BaseInputGroup :label="$t('items.image')">
             <BaseFileUploader
               v-model="itemImagePreview"
               base64
