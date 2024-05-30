@@ -204,12 +204,6 @@ async function submitCategoryData() {
           data: categoryImageBlob.value,
         }),
       )
-      console.log(
-        JSON.stringify({
-          name: categoryImageName.value,
-          data: categoryImageBlob.value,
-        }),
-      )
       image.append('is_category_image_removed', isCategoryImageRemoved.value)
       await categoryStore.updateCategoryImage(res.data.data.id, image)
       categoryImageBlob.value = null

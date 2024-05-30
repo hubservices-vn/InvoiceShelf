@@ -150,7 +150,14 @@
             />
           </div>
         </template>
-
+        <template #cell-image_url="{ row }">
+          <div class="relative block">
+            <img v-if="row.data.image_url"
+            :src="row.data.image_url"
+            class="w-full"
+          />
+          </div>
+        </template>
         <template #cell-status="{ row }">
           <div class="relative block">
             <BaseCheckbox
@@ -266,6 +273,12 @@ const itemColumns = computed(() => {
       tdClass: 'font-medium text-gray-900',
       placeholderClass: 'w-10',
       sortable: false,
+    },
+    {
+      key: 'image_url',
+      label: t('items.image'),
+      thClass: 'extra',
+      tdClass: 'font-medium text-gray-900 w-5 !py-2 !px-3',
     },
     {
       key: 'name',

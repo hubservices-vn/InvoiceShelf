@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use InvoiceShelf\Http\Controllers\Controller;
 use InvoiceShelf\Http\Requests;
 use InvoiceShelf\Http\Requests\DeleteItemsRequest;
+use InvoiceShelf\Http\Requests\ItemImageRequest;
 use InvoiceShelf\Http\Resources\ItemResource;
 use InvoiceShelf\Models\Item;
 use InvoiceShelf\Models\TaxType;
@@ -92,6 +93,27 @@ class ItemsController extends Controller
 
         Item::destroy($request->ids);
 
+        return response()->json([
+            'success' => true,
+        ]);
+    }
+
+    /**
+     * Upload the item image to storage.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function uploadItemImage(ItemImageRequest $request, Item $item)
+    {
+        $data = json_decode($request->item_image);
+        if (isset($request->is_item_image_removed) && (bool) $request->is_item_image_removed) {
+            $item->clearMediaCollection('item');
+        }
+        if ($data) {
+            $item->addMediaFromBase64($data->data)
+                ->usingFileName($data->name)
+                ->toMediaCollection('item');
+        }
         return response()->json([
             'success' => true,
         ]);

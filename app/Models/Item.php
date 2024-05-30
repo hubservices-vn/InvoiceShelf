@@ -7,11 +7,14 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 use InvoiceShelf\Traits\HasCustomFieldsTrait;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
 
-class Item extends Model
+class Item extends Model implements HasMedia
 {
     use HasFactory;
     use HasCustomFieldsTrait;
+    use InteractsWithMedia;
 
     protected $guarded = ['id'];
 
@@ -46,6 +49,17 @@ class Item extends Model
     public function currency()
     {
         return $this->belongsTo(Currency::class);
+    }
+
+    public function getImageAttribute()
+    {
+        $image = $this->getMedia('item')->first();
+
+        if ($image) {
+            return asset($image->getUrl());
+        }
+
+        return 0;
     }
 
     public function scopeWhereSearch($query, $search)

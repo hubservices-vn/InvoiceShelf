@@ -36,6 +36,19 @@ export const useItemStore = (useWindow = false) => {
       isItemUnitEdit: (state) => (state.currentItemUnit.id ? true : false),
     },
     actions: {
+      updateItemImage(id, data) {
+        return new Promise((resolve, reject) => {
+          axios
+            .post(`/api/v1/items/${id}/upload-image`, data)
+            .then((response) => {
+              resolve(response)
+            })
+            .catch((err) => {
+              handleError(err)
+              reject(err)
+            })
+        })
+      },
       resetCurrentItem() {
         this.currentItem = {
           name: '',

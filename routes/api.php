@@ -243,7 +243,7 @@ Route::prefix('/v1')->group(function () {
             //----------------------------------
 
             Route::post('/items/delete', [ItemsController::class, 'delete']);
-
+            Route::post('/items/{item}/upload-image', [ItemsController::class, 'uploadItemImage']);
             Route::resource('items', ItemsController::class);
 
             Route::resource('units', UnitsController::class);

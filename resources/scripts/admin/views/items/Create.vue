@@ -133,6 +133,14 @@
               @input="v$.currentItem.description.$touch()"
             />
           </BaseInputGroup>
+          <BaseInputGroup :label="$t('categories.image')">
+            <BaseFileUploader
+              v-model="itemImagePreview"
+              base64
+              @change="onFileInputChange"
+              @remove="onFileInputRemove"
+            />
+          </BaseInputGroup>
           <div>
             <CustomerCustomFields
               type="Item"
@@ -168,7 +176,7 @@
 </template>
 
 <script setup>
-import { computed, ref, onMounted } from 'vue'
+import { computed, ref, onMounted, watch } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import {
@@ -203,6 +211,11 @@ const route = useRoute()
 const router = useRouter()
 const userStore = useUserStore()
 
+const isImageRemoved = ref(false)
+const itemImagePreview = ref([])
+const itemImageBlob = ref(null)
+const itemImageName = ref(null)
+
 const isSaving = ref(false)
 const taxPerItem = ref(companyStore.selectedCompanySettings.tax_per_item)
 const customFieldValidationScope = 'customFields'
@@ -211,6 +224,17 @@ let isFetchingInitialData = ref(false)
 
 itemStore.$reset()
 loadData()
+
+function onFileInputChange(fileName, file, fileCount, fileList) {
+  itemImageName.value = fileList.name
+  itemImageBlob.value = file
+}
+
+function onFileInputRemove() {
+  itemImageBlob.value = null
+  itemImageName.value = null
+  isImageRemoved.value = true
+}
 
 function openCategoryModal() {
   modalStore.openModal({
@@ -355,7 +379,22 @@ async function submitItem() {
 
     const action = isEdit.value ? itemStore.updateItem : itemStore.addItem
 
-    await action(data)
+    const res = await action(data)
+    if (res.data.data && (itemImageBlob.value || isImageRemoved.value)) {
+        let image = new FormData()
+        image.append(
+          'item_image',
+          JSON.stringify({
+            name: itemImageName.value,
+            data: itemImageBlob.value,
+          }),
+        )
+        image.append('is_item_image_removed', isImageRemoved.value)
+        await itemStore.updateItemImage(res.data.data.id, image)
+        itemImageBlob.value = null
+        isImageRemoved.value = false
+    }
+
     isSaving.value = false
     router.push('/admin/items')
     closeItemModal()
@@ -372,6 +411,14 @@ async function submitItem() {
     }, 300)
   }
 }
+watch(
+  () => itemStore.currentItem.image_url,
+  (image) => {
+    if (image) {
+      itemImagePreview.value = [{ image }]
+    }
+  },
+)
 onMounted(() => {
   fetchCategories()
 })

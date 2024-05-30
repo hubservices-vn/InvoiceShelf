@@ -310,6 +310,7 @@
     "edit_currency_not_allowed": "Cannot change currency once transactions created."
   },
   "items": {
+    "image": "Image",
     "title": "Items",
     "items_list": "Items List",
     "name": "Name",
