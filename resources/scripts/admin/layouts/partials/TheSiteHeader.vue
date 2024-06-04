@@ -34,7 +34,7 @@
       "
     >
       <img v-if="adminLogo" :src="adminLogo" class="h-6" />
-      <img v-else src="https://static.1.hubs.vn/image/tasktackers/logo/1%20Logo.png" class="h-16" />
+      <MainLogo v-else class="h-9" light-color="#f1f5f9" dark-color="#f1f5f9" />
     </router-link>
 
     <!-- toggle button-->

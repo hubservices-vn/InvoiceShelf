@@ -34,7 +34,7 @@
         ><i></i><i></i> <i></i><i></i><i></i> <i></i><i></i><i></i> <i></i
         ><i></i><i></i> <i></i><i></i><i></i> <i></i><i></i><i></i>
       </div>
-      <MainLogo
+      <LoaderLogo
         class="
           absolute
           block
@@ -54,7 +54,7 @@
 </template>
 
 <script setup>
-import MainLogo from '@/scripts/components/icons/MainLogo.vue'
+import LoaderLogo from '@/scripts/components/icons/LoaderLogo.vue'
 
 const props = defineProps({
   showBgOverlay: {

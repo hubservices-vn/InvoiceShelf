@@ -97,7 +97,6 @@ async function confirmUpdate() {
   isUpdating.value = true
   try {
     const res = await companyStore.updatePermissions({id: companyStore.selectedCompany.id})
-    console.log(res.data.success)
     if (res.data.success) {
       closeModal()
       // router.push('/admin/dashboard')

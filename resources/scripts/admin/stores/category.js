@@ -92,7 +92,6 @@ export const useCategoryStore = (useWindow = false) => {
       },
 
       updateCategoryImage(id, data) {
-        console.log(data)
         return new Promise((resolve, reject) => {
           axios
             .post(`/api/v1/categories/${id}/upload-image`, data)

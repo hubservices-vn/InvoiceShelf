@@ -15,7 +15,7 @@
     <div class="sm:mx-auto sm:w-full sm:max-w-md px-4 sm:px-0">
       <MainLogo
         v-if="!customerLogo"
-        class="block w-48 h-auto max-w-full text-primary-400 mx-auto"
+        class="block w-full h-auto max-w-full text-primary-400 mx-auto"
       />
       <img
         v-else
