@@ -2,6 +2,7 @@
   "navigation": {
     "dashboard": "Dashboard",
     "customers": "Customers",
+    "calendars": "Calendars",
     "categories": "Categories",
     "items": "Items",
     "invoices": "Invoices",
@@ -14,6 +15,10 @@
     "logout": "Logout",
     "users": "Users",
     "modules": "Modules"
+  },
+  "calendars": {
+    "calendar": "Calendar",
+    "add_calendar": "Add Calendar"
   },
   "general": {
     "add_company": "Add Company",
@@ -344,6 +349,7 @@
     "reject_estimate": "Reject Estimate",
     "estimate": "Estimate | Estimates",
     "estimates_list": "Estimates List",
+    "add_calendar": "Add calendar",
     "days": "{days} Days",
     "months": "{months} Month",
     "years": "{years} Year",

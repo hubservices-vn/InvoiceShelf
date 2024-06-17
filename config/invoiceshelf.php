@@ -1,5 +1,6 @@
 <?php
 
+use InvoiceShelf\Models\Calendar;
 use InvoiceShelf\Models\Category;
 use InvoiceShelf\Models\Customer;
 use InvoiceShelf\Models\CustomField;
@@ -302,16 +303,16 @@ return [
             'ability' => 'view-customer',
             'model' => Customer::class,
         ],
-        // [
-        //     'title' => 'navigation.categories',
-        //     'group' => 1,
-        //     'link' => '/admin/categories',
-        //     'icon' => 'TagIcon',
-        //     'name' => 'Categories',
-        //     'owner_only' => false,
-        //     'ability' => 'view-category',
-        //     'model' => Category::class,
-        // ],
+        [
+            'title' => 'navigation.calendars',
+            'group' => 1,
+            'link' => '/admin/calendars',
+            'icon' => 'CalendarIcon',
+            'name' => 'Calendars',
+            'owner_only' => false,
+            'ability' => 'view-calendar',
+            'model' => Calendar::class,
+        ],
         [
             'title' => 'navigation.items',
             'group' => 1,

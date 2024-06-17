@@ -1,5 +1,6 @@
 <?php
 
+use InvoiceShelf\Models\Calendar;
 use InvoiceShelf\Models\Category;
 use InvoiceShelf\Models\Customer;
 use InvoiceShelf\Models\CustomField;
@@ -46,6 +47,37 @@ return [
             'model' => Customer::class,
             'depends_on' => [
                 'view-customer',
+            ],
+        ],
+
+        // Calendar
+        [
+            'name' => 'view calendar',
+            'ability' => 'view-calendar',
+            'model' => Calendar::class,
+        ],
+        [
+            'name' => 'create calendar',
+            'ability' => 'create-calendar',
+            'model' => Calendar::class,
+            'depends_on' => [
+                'view-calendar',
+            ],
+        ],
+        [
+            'name' => 'edit calendar',
+            'ability' => 'edit-calendar',
+            'model' => Calendar::class,
+            'depends_on' => [
+                'view-calendar',
+            ],
+        ],
+        [
+            'name' => 'delete calendar',
+            'ability' => 'delete-calendar',
+            'model' => Calendar::class,
+            'depends_on' => [
+                'view-calendar',
             ],
         ],
 

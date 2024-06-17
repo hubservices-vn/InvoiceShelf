@@ -1,39 +1,24 @@
 <template>
   <BasePage>
     <SendEstimateModal />
-
+    <CalendarModal />
     <BasePageHeader :title="$t('estimates.title')">
       <BaseBreadcrumb>
         <BaseBreadcrumbItem :title="$t('general.home')" to="dashboard" />
 
-        <BaseBreadcrumbItem
-          :title="$t('estimates.estimate', 2)"
-          to="#"
-          active
-        />
+        <BaseBreadcrumbItem :title="$t('estimates.estimate', 2)" to="#" active />
       </BaseBreadcrumb>
 
       <template #actions>
-        <BaseButton
-          v-show="estimateStore.totalEstimateCount"
-          variant="primary-outline"
-          @click="toggleFilter"
-        >
+        <BaseButton v-show="estimateStore.totalEstimateCount" variant="primary-outline" @click="toggleFilter">
           {{ $t('general.filter') }}
           <template #right="slotProps">
-            <BaseIcon
-              v-if="!showFilters"
-              :class="slotProps.class"
-              name="FilterIcon"
-            />
+            <BaseIcon v-if="!showFilters" :class="slotProps.class" name="FilterIcon" />
             <BaseIcon v-else name="XIcon" :class="slotProps.class" />
           </template>
         </BaseButton>
 
-        <router-link
-          v-if="userStore.hasAbilities(abilities.CREATE_ESTIMATE)"
-          to="estimates/create"
-        >
+        <router-link v-if="userStore.hasAbilities(abilities.CREATE_ESTIMATE)" to="estimates/create">
           <BaseButton variant="primary" class="ml-4">
             <template #left="slotProps">
               <BaseIcon name="PlusIcon" :class="slotProps.class" />
@@ -44,60 +29,29 @@
       </template>
     </BasePageHeader>
 
-    <BaseFilterWrapper
-      v-show="showFilters"
-      :row-on-xl="true"
-      @clear="clearFilter"
-    >
+    <BaseFilterWrapper v-show="showFilters" :row-on-xl="true" @clear="clearFilter">
       <BaseInputGroup :label="$t('customers.customer', 1)">
-        <BaseCustomerSelectInput
-          v-model="filters.customer_id"
-          :placeholder="$t('customers.type_or_click')"
-          value-prop="id"
-          label="name"
-        />
+        <BaseCustomerSelectInput v-model="filters.customer_id" :placeholder="$t('customers.type_or_click')"
+          value-prop="id" label="name" />
       </BaseInputGroup>
       <BaseInputGroup :label="$t('categories.label')" class="text-left">
-        <BaseTreeSelect
-              name="parent_id"
-              value-prop="id"
-              label-prop="name"
-              :placeholder="$t('expenses.categories.select_a_category')"
-              parent-prop="parent_id"
-              :options="categories"
-              :loading="categoryLoading"
-              v-model="filters.category_id"
-            />
+        <BaseTreeSelect name="parent_id" value-prop="id" label-prop="name"
+          :placeholder="$t('expenses.categories.select_a_category')" parent-prop="parent_id" :options="categories"
+          :loading="categoryLoading" v-model="filters.category_id" />
       </BaseInputGroup>
       <BaseInputGroup :label="$t('estimates.status')">
-        <BaseMultiselect
-          v-model="filters.status"
-          :options="status"
-          searchable
-          :placeholder="$t('general.select_a_status')"
-          @update:modelValue="setActiveTab"
-          @remove="clearStatusSearch()"
-        />
+        <BaseMultiselect v-model="filters.status" :options="status" searchable
+          :placeholder="$t('general.select_a_status')" @update:modelValue="setActiveTab"
+          @remove="clearStatusSearch()" />
       </BaseInputGroup>
       <BaseInputGroup :label="$t('general.from')">
-        <BaseDatePicker
-          v-model="filters.from_date"
-          :calendar-button="true"
-          calendar-button-icon="calendar"
-        />
+        <BaseDatePicker v-model="filters.from_date" :calendar-button="true" calendar-button-icon="calendar" />
       </BaseInputGroup>
 
-      <div
-        class="hidden w-8 h-0 mx-4 border border-gray-400 border-solid xl:block"
-        style="margin-top: 1.5rem"
-      />
+      <div class="hidden w-8 h-0 mx-4 border border-gray-400 border-solid xl:block" style="margin-top: 1.5rem" />
 
       <BaseInputGroup :label="$t('general.to')">
-        <BaseDatePicker
-          v-model="filters.to_date"
-          :calendar-button="true"
-          calendar-button-icon="calendar"
-        />
+        <BaseDatePicker v-model="filters.to_date" :calendar-button="true" calendar-button-icon="calendar" />
       </BaseInputGroup>
 
       <BaseInputGroup :label="$t('estimates.estimate_number')">
@@ -109,19 +63,13 @@
       </BaseInputGroup>
     </BaseFilterWrapper>
 
-    <BaseEmptyPlaceholder
-      v-show="showEmptyScreen"
-      :title="$t('estimates.no_estimates')"
-      :description="$t('estimates.list_of_estimates')"
-    >
+    <BaseEmptyPlaceholder v-show="showEmptyScreen" :title="$t('estimates.no_estimates')"
+      :description="$t('estimates.list_of_estimates')">
       <ObservatoryIcon class="mt-5 mb-4" />
 
       <template #actions>
-        <BaseButton
-          v-if="userStore.hasAbilities(abilities.CREATE_ESTIMATE)"
-          variant="primary-outline"
-          @click="$router.push('/admin/estimates/create')"
-        >
+        <BaseButton v-if="userStore.hasAbilities(abilities.CREATE_ESTIMATE)" variant="primary-outline"
+          @click="$router.push('/admin/estimates/create')">
           <template #left="slotProps">
             <BaseIcon name="PlusIcon" :class="slotProps.class" />
           </template>
@@ -131,8 +79,7 @@
     </BaseEmptyPlaceholder>
 
     <div v-show="!showEmptyScreen" class="relative table-container">
-      <div
-        class="
+      <div class="
           relative
           flex
           items-center
@@ -141,8 +88,7 @@
           mt-5
           list-none
           border-b-2 border-gray-200 border-solid
-        "
-      >
+        ">
         <!-- Tabs -->
         <BaseTabGroup class="-mb-5" @change="setStatusFilter">
           <BaseTab :title="$t('general.all')" filter="" />
@@ -150,24 +96,19 @@
           <BaseTab :title="$t('general.sent')" filter="SENT" />
         </BaseTabGroup>
 
-        <BaseDropdown
-          v-if="
-            estimateStore.selectedEstimates.length &&
-            userStore.hasAbilities(abilities.DELETE_ESTIMATE)
-          "
-          class="absolute float-right"
-        >
+        <BaseDropdown v-if="
+          estimateStore.selectedEstimates.length &&
+          userStore.hasAbilities(abilities.DELETE_ESTIMATE)
+        " class="absolute float-right">
           <template #activator>
-            <span
-              class="
+            <span class="
                 flex
                 text-sm
                 font-medium
                 cursor-pointer
                 select-none
                 text-primary-400
-              "
-            >
+              ">
               {{ $t('general.actions') }}
               <BaseIcon name="ChevronDownIcon" />
             </span>
@@ -180,30 +121,18 @@
         </BaseDropdown>
       </div>
 
-      <BaseTable
-        ref="tableComponent"
-        :data="fetchData"
-        :columns="estimateColumns"
-        :placeholder-count="estimateStore.totalEstimateCount >= 20 ? 10 : 5"
-        class="mt-10"
-      >
+      <BaseTable ref="tableComponent" :data="fetchData" :columns="estimateColumns"
+        :placeholder-count="estimateStore.totalEstimateCount >= 20 ? 10 : 5" class="mt-10">
         <template #header>
           <div class="absolute items-center left-6 top-2.5 select-none">
-            <BaseCheckbox
-              v-model="estimateStore.selectAllField"
-              variant="primary"
-              @change="estimateStore.selectAllEstimates"
-            />
+            <BaseCheckbox v-model="estimateStore.selectAllField" variant="primary"
+              @change="estimateStore.selectAllEstimates" />
           </div>
         </template>
 
         <template #cell-checkbox="{ row }">
           <div class="relative block">
-            <BaseCheckbox
-              :id="row.id"
-              v-model="selectField"
-              :value="row.data.id"
-            />
+            <BaseCheckbox :id="row.id" v-model="selectField" :value="row.data.id" />
           </div>
         </template>
 
@@ -213,10 +142,7 @@
         </template>
 
         <template #cell-estimate_number="{ row }">
-          <router-link
-            :to="{ path: `estimates/${row.data.id}/view` }"
-            class="font-medium text-primary-500"
-          >
+          <router-link :to="{ path: `estimates/${row.data.id}/view` }" class="font-medium text-primary-500">
             {{ row.data.estimate_number }}
           </router-link>
         </template>
@@ -232,10 +158,7 @@
         </template>
 
         <template #cell-total="{ row }">
-          <BaseFormatMoney
-            :amount="row.data.total"
-            :currency="row.data.customer.currency"
-          />
+          <BaseFormatMoney :amount="row.data.total" :currency="row.data.customer.currency" />
         </template>
 
         <!-- Actions -->
@@ -260,6 +183,7 @@ import abilities from '@/scripts/admin/stub/abilities'
 import ObservatoryIcon from '@/scripts/components/icons/empty/ObservatoryIcon.vue'
 import EstimateDropDown from '@/scripts/admin/components/dropdowns/EstimateIndexDropdown.vue'
 import SendEstimateModal from '@/scripts/admin/components/modal-components/SendEstimateModal.vue'
+import CalendarModal from '@/scripts/admin/components/modal-components/CalendarModal.vue'
 import { useCategoryStore } from '@/scripts/admin/stores/category'
 
 const categoryStore = useCategoryStore()

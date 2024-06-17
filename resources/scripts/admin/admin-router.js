@@ -20,6 +20,9 @@ const CustomerCreate = () =>
   import('@/scripts/admin/views/customers/Create.vue')
 const CustomerView = () => import('@/scripts/admin/views/customers/View.vue')
 
+// Calendar
+const CalendarIndex = () => import('@/scripts/admin/views/calendars/Index.vue')
+
 //Settings
 const SettingsIndex = () =>
   import('@/scripts/admin/views/settings/SettingsIndex.vue')
@@ -195,6 +198,14 @@ export default [
         meta: { ability: abilities.VIEW_CUSTOMER },
         component: CustomerView,
       },
+
+      // Customers
+      {
+        path: 'calendars',
+        meta: { ability: abilities.VIEW_CALENDAR },
+        component: CalendarIndex,
+      },
+
       // Payments
       {
         path: 'payments',

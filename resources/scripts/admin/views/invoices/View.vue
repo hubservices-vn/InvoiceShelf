@@ -12,6 +12,7 @@ import { useDialogStore } from '@/scripts/stores/dialog'
 import SendInvoiceModal from '@/scripts/admin/components/modal-components/SendInvoiceModal.vue'
 import InvoiceDropdown from '@/scripts/admin/components/dropdowns/InvoiceIndexDropdown.vue'
 import LoadingIcon from '@/scripts/components/icons/LoadingIcon.vue'
+import CalendarModal from '@/scripts/admin/components/modal-components/CalendarModal.vue'
 
 import abilities from '@/scripts/admin/stub/abilities'
 
@@ -230,7 +231,7 @@ onSearched = debounce(onSearched, 500)
 
 <template>
   <SendInvoiceModal @update="updateSentInvoice" />
-
+  <CalendarModal />
   <BasePage v-if="invoiceData" class="xl:pl-96 xl:ml-8">
     <BasePageHeader :title="pageTitle">
       <template #actions>

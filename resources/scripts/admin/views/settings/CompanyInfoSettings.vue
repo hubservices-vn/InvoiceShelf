@@ -108,7 +108,7 @@
         {{ $t('settings.company_info.save') }}
       </BaseButton>
 
-      <div v-if="companyStore.companies.length !== 1" class="py-5">
+      <div class="py-5">
         <BaseDivider class="my-4" />
         <h3 class="text-lg leading-6 font-medium text-gray-900">
           {{ $t('settings.company_info.update_permissions') }}

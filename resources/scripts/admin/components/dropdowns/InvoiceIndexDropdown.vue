@@ -47,6 +47,18 @@
       </BaseDropdownItem>
     </router-link>
 
+    <!-- Add Calendar  -->
+    <BaseDropdownItem
+      v-if="userStore.hasAbilities(abilities.CREATE_CALENDAR)"
+      @click="openCalendarModal(row)"
+    >
+      <BaseIcon
+        name="CalendarIcon"
+        class="w-5 h-5 mr-3 text-gray-400 group-hover:text-gray-500"
+      />
+      {{ $t('estimates.add_calendar') }}
+    </BaseDropdownItem>
+
     <!-- Send Invoice Mail  -->
     <BaseDropdownItem v-if="canSendInvoice(row)" @click="sendInvoice(row)">
       <BaseIcon
@@ -123,6 +135,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { useUserStore } from '@/scripts/admin/stores/user'
 import { inject } from 'vue'
 import abilities from '@/scripts/admin/stub/abilities'
+import CalendarModal from '@/scripts/admin/components/modal-components/CalendarModal.vue'
 
 const props = defineProps({
   row: {
@@ -236,6 +249,19 @@ async function onMarkAsSent(id) {
         })
       }
     })
+}
+
+async function openCalendarModal(invoice) {
+  modalStore.openModal({
+    title: t('estimates.add_calendar'),
+    componentName: 'CalendarModal',
+    data: {
+      type: 'invoice',
+      id: invoice.id,
+      customerId: invoice.customer_id,
+      title: invoice.invoice_number
+    },
+  })
 }
 
 async function sendInvoice(invoice) {

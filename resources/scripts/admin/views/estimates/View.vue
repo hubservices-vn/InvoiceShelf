@@ -1,5 +1,6 @@
 <template>
   <SendEstimateModal @update="updateSentEstimate" />
+  <CalendarModal />
   <BasePage v-if="estimateData" class="xl:pl-96 xl:ml-8">
     <BasePageHeader :title="pageTitle">
       <template #actions>
@@ -289,6 +290,7 @@ import { useUserStore } from '@/scripts/admin/stores/user'
 
 import EstimateDropDown from '@/scripts/admin/components/dropdowns/EstimateIndexDropdown.vue'
 import SendEstimateModal from '@/scripts/admin/components/modal-components/SendEstimateModal.vue'
+import CalendarModal from '@/scripts/admin/components/modal-components/CalendarModal.vue'
 import LoadingIcon from '@/scripts/components/icons/LoadingIcon.vue'
 
 import abilities from '@/scripts/admin/stub/abilities'

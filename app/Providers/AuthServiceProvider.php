@@ -4,8 +4,9 @@ namespace InvoiceShelf\Providers;
 
 use Gate;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
-use InvoiceShelf\Policies\CategoryPolicy;
+use InvoiceShelf\Policies\CalendarPolicy;
 use InvoiceShelf\Policies\CompanyPolicy;
+use InvoiceShelf\Policies\CategoryPolicy;
 use InvoiceShelf\Policies\CustomerPolicy;
 use InvoiceShelf\Policies\DashboardPolicy;
 use InvoiceShelf\Policies\EstimatePolicy;
@@ -30,7 +31,7 @@ class AuthServiceProvider extends ServiceProvider
      */
     protected $policies = [
         \InvoiceShelf\Models\Customer::class => \InvoiceShelf\Policies\CustomerPolicy::class,
-        \InvoiceShelf\Models\Category::class => \InvoiceShelf\Policies\CategoryPolicy::class,
+        \InvoiceShelf\Models\Calendar::class => \InvoiceShelf\Policies\CalendarPolicy::class,
         \InvoiceShelf\Models\Invoice::class => \InvoiceShelf\Policies\InvoicePolicy::class,
         \InvoiceShelf\Models\Estimate::class => \InvoiceShelf\Policies\EstimatePolicy::class,
         \InvoiceShelf\Models\Payment::class => \InvoiceShelf\Policies\PaymentPolicy::class,
@@ -82,6 +83,7 @@ class AuthServiceProvider extends ServiceProvider
         Gate::define('delete multiple estimates', [EstimatePolicy::class, 'deleteMultiple']);
         Gate::define('delete multiple expenses', [ExpensePolicy::class, 'deleteMultiple']);
         Gate::define('delete multiple payments', [PaymentPolicy::class, 'deleteMultiple']);
+        Gate::define('delete multiple calendars', [CalendarPolicy::class, 'deleteMultiple']);
         Gate::define('delete multiple recurring invoices', [RecurringInvoicePolicy::class, 'deleteMultiple']);
 
         Gate::define('view dashboard', [DashboardPolicy::class, 'view']);

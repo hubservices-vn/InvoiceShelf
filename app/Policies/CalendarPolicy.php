@@ -3,11 +3,11 @@
 namespace InvoiceShelf\Policies;
 
 use Illuminate\Auth\Access\HandlesAuthorization;
-use InvoiceShelf\Models\Category;
+use InvoiceShelf\Models\Calendar;
 use InvoiceShelf\Models\User;
 use Silber\Bouncer\BouncerFacade;
 
-class CategoryPolicy
+class CalendarPolicy
 {
     use HandlesAuthorization;
 
@@ -18,7 +18,7 @@ class CategoryPolicy
      */
     public function viewAny(User $user)
     {
-        if (BouncerFacade::can('view-category', Category::class)) {
+        if (BouncerFacade::can('view-calendar', Calendar::class)) {
             return true;
         }
 
@@ -30,9 +30,9 @@ class CategoryPolicy
      *
      * @return mixed
      */
-    public function view(User $user, Category $category)
+    public function view(User $user, Calendar $calendar)
     {
-        if (BouncerFacade::can('view-category', Category::class) && $user->hasCompany($category->company_id)) {
+        if (BouncerFacade::can('view-calendar', $calendar) && $user->hasCompany($calendar->company_id)) {
             return true;
         }
 
@@ -46,7 +46,7 @@ class CategoryPolicy
      */
     public function create(User $user)
     {
-        if (BouncerFacade::can('create-category', Category::class)) {
+        if (BouncerFacade::can('create-calendar', Calendar::class)) {
             return true;
         }
 
@@ -58,9 +58,9 @@ class CategoryPolicy
      *
      * @return mixed
      */
-    public function update(User $user, Category $category)
+    public function update(User $user, Calendar $calendar)
     {
-        if (BouncerFacade::can('edit-category', Category::class) && $user->hasCompany($category->company_id)) {
+        if (BouncerFacade::can('edit-calendar', $calendar) && $user->hasCompany($calendar->company_id) && $user->isOwner()) {
             return true;
         }
 
@@ -72,9 +72,9 @@ class CategoryPolicy
      *
      * @return mixed
      */
-    public function delete(User $user, Category $category)
+    public function delete(User $user, Calendar $calendar)
     {
-        if (BouncerFacade::can('delete-category', Category::class) && $user->hasCompany($category->company_id)) {
+        if (BouncerFacade::can('delete-calendar', $calendar) && $user->hasCompany($calendar->company_id) && $user->isOwner()) {
             return true;
         }
 
@@ -86,9 +86,9 @@ class CategoryPolicy
      *
      * @return mixed
      */
-    public function restore(User $user, Category $category)
+    public function restore(User $user, Calendar $calendar)
     {
-        if (BouncerFacade::can('delete-category', Category::class) && $user->hasCompany($category->company_id)) {
+        if (BouncerFacade::can('delete-calendar', $calendar) && $user->hasCompany($calendar->company_id) && $user->isOwner()) {
             return true;
         }
 
@@ -100,9 +100,23 @@ class CategoryPolicy
      *
      * @return mixed
      */
-    public function forceDelete(User $user, Category $category)
+    public function forceDelete(User $user, Calendar $calendar)
     {
-        if (BouncerFacade::can('delete-category', Category::class) && $user->hasCompany($category->company_id)) {
+        if (BouncerFacade::can('delete-calendar', $calendar) && $user->hasCompany($calendar->company_id) && $user->isOwner()) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Determine whether the user can delete models.
+     *
+     * @return mixed
+     */
+    public function deleteMultiple(User $user)
+    {
+        if (BouncerFacade::can('delete-calendar', Calendar::class)) {
             return true;
         }
 

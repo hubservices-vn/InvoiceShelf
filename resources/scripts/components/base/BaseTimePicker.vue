@@ -49,6 +49,7 @@
 </template>
 
 <script setup>
+import moment from 'moment'
 import FlatPickr from 'vue-flatpickr-component'
 import 'flatpickr/dist/flatpickr.css'
 import { computed, reactive, useSlots, ref } from 'vue'

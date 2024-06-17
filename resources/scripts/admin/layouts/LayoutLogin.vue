@@ -47,7 +47,7 @@
         >
           <p class="mb-3">
             {{ copyrightText }}
-            {{ new Date().getFullYear() }}
+            <!-- {{ new Date().getFullYear() }} -->
           </p>
         </div>
       </div>
@@ -141,7 +141,7 @@ const pageHeading = computed(() => {
     return window.login_page_heading
   }
 
-  return 'Simple Invoicing for Individuals Small Businesses'
+  return 'Tackle tasks with ease, let Tasktackers please!'
 })
 
 const pageDescription = computed(() => {
@@ -149,14 +149,15 @@ const pageDescription = computed(() => {
     return window.login_page_description
   }
 
-  return 'InvoiceShelf helps you track expenses, record payments & generate beautiful invoices & estimates.'
+  // return 'InvoiceShelf helps you track expenses, record payments & generate beautiful invoices & estimates.'
+  return ''
 })
 
 const copyrightText = computed(() => {
   if (window.copyright_text) {
     return window.copyright_text
   }
-  return 'Copyright @ IDEOLOGIX MEDIA DOOEL.'
+  return ''
 })
 
 const loginPageLogo = computed(() => {

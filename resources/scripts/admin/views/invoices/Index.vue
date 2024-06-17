@@ -1,5 +1,6 @@
 <template>
   <BasePage>
+    <CalendarModal />
     <SendInvoiceModal />
     <BasePageHeader :title="$t('invoices.title')">
       <BaseBreadcrumb>
@@ -288,6 +289,7 @@ import { debouncedWatch } from '@vueuse/core'
 import MoonwalkerIcon from '@/scripts/components/icons/empty/MoonwalkerIcon.vue'
 import InvoiceDropdown from '@/scripts/admin/components/dropdowns/InvoiceIndexDropdown.vue'
 import SendInvoiceModal from '@/scripts/admin/components/modal-components/SendInvoiceModal.vue'
+import CalendarModal from '@/scripts/admin/components/modal-components/CalendarModal.vue'
 import { useCategoryStore } from '@/scripts/admin/stores/category'
 
 const categoryStore = useCategoryStore()

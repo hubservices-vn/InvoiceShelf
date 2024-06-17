@@ -7,6 +7,12 @@ export default {
   EDIT_CUSTOMER: 'edit-customer',
   VIEW_CUSTOMER: 'view-customer',
 
+  // Calendars
+  CREATE_CALENDAR: 'create-calendar',
+  DELETE_CALENDAR: 'delete-calendar',
+  EDIT_CALENDAR: 'edit-calendar',
+  VIEW_CALENDAR: 'view-calendar',
+  
   // Items
   CREATE_ITEM: 'create-item',
   DELETE_ITEM: 'delete-item',

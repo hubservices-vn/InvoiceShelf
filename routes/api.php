@@ -59,6 +59,7 @@ use InvoiceShelf\Http\Controllers\V1\Admin\Modules\ModuleController;
 use InvoiceShelf\Http\Controllers\V1\Admin\Modules\ModulesController;
 use InvoiceShelf\Http\Controllers\V1\Admin\Modules\UnzipModuleController;
 use InvoiceShelf\Http\Controllers\V1\Admin\Modules\UploadModuleController;
+use InvoiceShelf\Http\Controllers\V1\Admin\Calendar\CalendarsController;
 use InvoiceShelf\Http\Controllers\V1\Admin\Payment\PaymentMethodsController;
 use InvoiceShelf\Http\Controllers\V1\Admin\Payment\PaymentsController;
 use InvoiceShelf\Http\Controllers\V1\Admin\Payment\SendPaymentController;
@@ -317,6 +318,12 @@ Route::prefix('/v1')->group(function () {
             Route::apiResource('payments', PaymentsController::class);
 
             Route::apiResource('payment-methods', PaymentMethodsController::class);
+
+            // Calendar
+            //----------------------------------
+            Route::post('/calendars/delete', [CalendarsController::class, 'delete']);
+
+            Route::apiResource('calendars', CalendarsController::class);
 
             // Custom fields
             //----------------------------------
