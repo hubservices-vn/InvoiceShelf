@@ -443,7 +443,7 @@ const categoryLoading = ref(false)
 
 async function searchCategory(search = undefined) {
   categoryLoading.value = true
-  let res = await categoryStore.fetchCategories({ search, type: 'expense' })
+  let res = await categoryStore.fetchCategories({ search, type: 'expense', limit: 'all' })
   if (res.data.data.length > 0 && categoryStore.editCategory) {
     let categoryFound = res.data.data.find(
       (c) => c.id == categoryStore.editCategory.id,

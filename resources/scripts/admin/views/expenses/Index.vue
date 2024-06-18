@@ -314,11 +314,11 @@ onUnmounted(() => {
 })
 
 onMounted(() => {
-  categoryStore.fetchCategories({ limit: 'all' })
+  categoryStore.fetchCategories({ limit: 'all', limit: 'all' })
 })
 
 async function searchCategory(search) {
-  let res = await categoryStore.fetchCategories({ search })
+  let res = await categoryStore.fetchCategories({ search, limit: 'all' })
   return res.data.data
 }
 

@@ -238,7 +238,7 @@ const categories = ref([])
 const categoryLoading = ref(false)
 async function fetchCategories(search = undefined) {
   categoryLoading.value = true
-  const res = await categoryStore.fetchCategories({ search, type: 'item' })
+  const res = await categoryStore.fetchCategories({ search, type: 'item', limit: 'all' })
   if (res.data.data.length) {
     categories.value = res.data?.data || []
   }
